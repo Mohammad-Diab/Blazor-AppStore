@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStore", "AppStore\AppStore.csproj", "{C5B8FE8C-242F-4CD7-89E0-E8EF9453B19B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppStoreServer", "AppStoreServer\AppStoreServer.csproj", "{C11CF0EF-9C31-41F0-837C-C480C435FFE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStoreServer", "AppStoreServer\AppStoreServer.csproj", "{C11CF0EF-9C31-41F0-837C-C480C435FFE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{1E91ABD0-5CB6-44A6-A493-1743CF61745D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C11CF0EF-9C31-41F0-837C-C480C435FFE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C11CF0EF-9C31-41F0-837C-C480C435FFE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C11CF0EF-9C31-41F0-837C-C480C435FFE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E91ABD0-5CB6-44A6-A493-1743CF61745D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E91ABD0-5CB6-44A6-A493-1743CF61745D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E91ABD0-5CB6-44A6-A493-1743CF61745D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E91ABD0-5CB6-44A6-A493-1743CF61745D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
