@@ -58,3 +58,33 @@ app {
 @media (min-width: 768px) {
 
 }
+
+#presentation {
+    background-color: #eee;
+    padding: 16px;
+    height: calc(100vh - 14em);
+    max-height: calc(100vh - 14em);
+    overflow-y: auto;
+}
+
+#presentation > .content{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.browser-item {
+    flex: 1 1 33%;
+    margin-right: 8px;
+    margin-bottom: 16px;
+    height: 120px;
+    background-color: #fff;
+    transition: transform 0.3s;
+    cursor: pointer;
+    max-width: 320px;
+    animation-fill-mode: backwards !important;
+}
+
+.browser-item:hover{
+    transform: scale(1.05);
+}

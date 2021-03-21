@@ -1,4 +1,4 @@
-﻿using Shared;
+﻿using SharedLibraries;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,7 @@ namespace AppStoreServer
             if (string.IsNullOrEmpty(filterText))
             {
                 appId ??= "";
-                result = AppItem.AppsList.Values.Where(x => x.ParentId == appId).OrderBy(x => x.IsFolder).ThenBy(x => x.Name);
+                result = AppItem.AppsList.Values.Where(x => x.ParentId == appId).OrderBy(x => !x.IsFolder).ThenBy(x => x.Name);
             }
             else
             {
