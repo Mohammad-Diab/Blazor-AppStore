@@ -1,0 +1,47 @@
+﻿
+@if (item is null)
+{
+    <div style="visibility: hidden" class="browser-item">placeholder</div>
+}
+else
+{
+    <div @onclick="ActivateMe" style="animation-delay: @((rand.Next(50, 500)) + "ms");" class="p-2 browser-item @isFolder @additionalClass">
+        <div style="" class="mr-2 p-1 item-image">
+            <img style="animation-delay: @((rand.Next(500, 1500)) + "ms");" src="@($"{Config.ApiUrl}GetImage?ImageName={item.ImageName}")" class="animate__animated animate__jackInTheBox">
+        </div>
+        <div class="item-text" style="">
+            <div class="mb-2 lead" style="max-height: 58px; overflow: hidden;" title="@item.Name">@item.Name</div>
+            <div class="mb-1 text-secondary" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="@item.Content">@item.Content</div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter] public AppItem item { get; set; } = null;
+    [Parameter] public Func<AppItem, Task> ClickCallback { get; set; }
+    string additionalClass = "animate__animated animate__faster animate__zoomIn";
+
+    string isFolder;
+
+    Random rand;
+    protected override void OnInitialized()
+    {
+        rand = new Random();
+        isFolder = (item?.IsFolder ?? false) ? "folder" : "file";
+        base.OnInitialized();
+    }
+
+    async Task ActivateMe() {
+        if (!additionalClass.Contains("active"))
+            additionalClass += " active";
+        await Task.Delay(300);
+        additionalClass = "";
+        if (!item.IsFolder)
+        {
+            StateHasChanged();
+        }
+
+        await ClickCallback(item);
+    }
+}

@@ -12,10 +12,10 @@ namespace SharedLibraries
 
         ItemType Type { get; set; }
 
-        string Size { get; }
+        string Content { get; }
 
         string DateModified { get; }
 
-        string ImagePath { get; set; }
+        string ImageName { get; set; }
     }
 }

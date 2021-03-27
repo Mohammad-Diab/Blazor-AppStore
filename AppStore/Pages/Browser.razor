@@ -1,11 +1,16 @@
 ﻿@page "/Browser"
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div>
-        <a href="./">
-            <span class="oi-media-skip-backward">back</span>
-        </a>
-        <a class="navbar-brand">Browser</a>
+    <div style="flex: 1 1 calc(100% - 320px); display: flex; align-content: space-evenly;">
+        <div style=" flex: 1 1 auto;">
+            <a href="./">
+                <span class="oi-media-skip-backward">back</span>
+            </a>
+            <span class="navbar-brand">Browser</span>
+        </div>
+        <div style=" flex: 1 1 auto;">
+            <span class="navbar-brand mr-0 ml-5">@currentItem.Name</span>
+        </div>
     </div>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
@@ -20,7 +25,11 @@
 <div class="container mt-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">root</li>
+            @foreach (var item in breadcrumbList)
+            {
+                <BreadcrumbItem isActive="item.Id==currentItem.Id" item="item" ClickCallback="NavigateBack" />
+            }
+
         </ol>
     </nav>
     <div id="presentation">
@@ -35,15 +44,18 @@
         else
         {
             <div class="content">
-                @for (int i = 0; i < contentList.Count; i++)
-                {
-                    <div style="animation-delay: @((i * 100) + "ms")" class="browser-item animate__animated animate__faster animate__jackInTheBox ">@contentList[i].Name</div>
+                @{
+                    Random rand = new Random();
+                    for (int i = 0; i < contentList.Count; i++)
+                    {
+                        <BrowserItem ClickCallback="Navigate" item="contentList[i]" />
+                    }
                 }
                 @{
                     int placeholder_div = 3 - contentList.Count % 3;
                     for (int i = 0; placeholder_div < 3 && i < placeholder_div; i++)
                     {
-                        <div style="visibility: hidden" class="browser-item">placeholder</div>
+                        <BrowserItem />
                     }
                 }
             </div>

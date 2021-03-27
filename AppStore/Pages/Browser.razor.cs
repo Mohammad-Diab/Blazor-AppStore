@@ -9,31 +9,66 @@ namespace AppStore.Pages
 {
     public partial class Browser
     {
-        string currentLocation = "root";
-        List<string> breadcrumbList = new List<string>();
-        List<string> contentListClassList;
+        private AppItem currentItem;
+        List<AppItem> breadcrumbList;
         List<AppItem> contentList;
 
         async protected override Task OnInitializedAsync()
         {
-            using (HttpClient request = new HttpClient())
-            {
-                await Task.Delay(1000);
-                contentList = new List<AppItem>();
-                contentList.AddRange(await request.GetFromJsonAsync<List<AppItem>>("http://localhost/AppStoreServer/Apps/GetApps"));
-                contentListClassList = new List<string>(contentList.Select(x => "d-none"));
-            }
+            breadcrumbList = new List<AppItem>();
+            AppItem app = new AppItem("root", "root", true, SharedLibraries.ItemType.Folder, "", "", "");
+            await GetDataFromServer(app);
             base.OnInitialized();
         }
 
-        async protected override Task OnAfterRenderAsync(bool firstRender)
+        public async Task Navigate(AppItem item)
         {
-            for (int i = 0; i < contentListClassList?.Count; i++)
+            if (item.IsFolder)
             {
-                contentListClassList[i] = "";
-                await Task.Delay(1000);
+                await GetDataFromServer(item);
             }
-            await base.OnAfterRenderAsync(firstRender);
+            else
+            {
+                
+            }
+            StateHasChanged();
         }
+
+        public async Task NavigateBack(AppItem item)
+        {
+            if (item.IsFolder)
+            {
+                int index = breadcrumbList.IndexOf(item);
+                if (index > -1)
+                {
+                    for (; index < breadcrumbList.Count;)
+                    {
+                        breadcrumbList.RemoveAt(index);
+                    }
+                }
+
+               await  GetDataFromServer(item);
+            }
+            else
+            {
+
+            }
+            StateHasChanged();
+        }
+
+        private async Task GetDataFromServer(AppItem item)
+        {
+            currentItem = item;
+            breadcrumbList.Add(item);
+            contentList = null;
+            StateHasChanged();
+            using (HttpClient request = new HttpClient())
+            {
+                var requestResult = await request.GetFromJsonAsync<List<AppItem>>($"{Config.ApiUrl}GetApps?appId={item.Id}");
+                contentList = new List<AppItem>();
+                contentList.AddRange(requestResult);
+            }
+        }
+
     }
 }

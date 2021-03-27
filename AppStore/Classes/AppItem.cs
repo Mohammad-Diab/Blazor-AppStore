@@ -10,26 +10,45 @@ namespace AppStore
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public bool IsFolder { get; }
+        public bool IsFolder { get; set; }
         public ItemType Type { get; set; }
-        public string Size { get; }
-        public string DateModified { get; }
-        public string ImagePath { get; set; }
+        public string Content { get; set; }
+        public string DateModified { get; set; }
+        public string ImageName { get; set; }
 
         public AppItem()
         {
 
         }
 
-        public AppItem(string id, string name, bool isFolder, ItemType type, string size, string dateModified, string imagePath)
+        public AppItem(string id, string name, bool isFolder, ItemType type, string content, string dateModified, string imagePath)
         {
             Id = id;
             Name = name;
             IsFolder = isFolder;
             Type = type;
-            Size = size;
+            Content = content;
             DateModified = dateModified;
-            ImagePath = imagePath;
+            ImageName = imagePath;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is AppItem)
+            {
+                return Id.Equals((obj as AppItem)?.Id);
+            }
+            return false;
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

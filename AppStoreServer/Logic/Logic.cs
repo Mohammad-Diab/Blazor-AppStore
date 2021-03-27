@@ -3,18 +3,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AppStoreServer
 {
     public class Logic
     {
+
         internal static IEnumerable<IAppItem> GetApps(string appId = "", string filterText = "")
         {
             IEnumerable<AppItem> result;
             if (string.IsNullOrEmpty(filterText))
             {
-                appId ??= "";
+                if (string.IsNullOrEmpty(appId) || appId.ToLower() == "root")
+                    appId = "";
                 result = AppItem.AppsList.Values.Where(x => x.ParentId == appId).OrderBy(x => !x.IsFolder).ThenBy(x => x.Name);
             }
             else
@@ -24,11 +28,29 @@ namespace AppStoreServer
             }
             return result.ToList();
         }
+
+        internal static byte[] ReadImage(string imageName)
+        {
+            string fullIconPath = AppItem.GetFullImagePath(imageName);
+
+            byte[] result = { };
+            if (File.Exists(fullIconPath))
+            {
+                if (new FileInfo(fullIconPath).Length > 262144)
+                {
+                    fullIconPath = AppItem.GetFullImagePath("A");
+                }
+                result = File.ReadAllBytes(fullIconPath);
+            }
+            return result;
+        }
     }
 
     public class AppItem : IAppItem
     {
         private const string AppDirectory = @"C:\AppStore\";
+
+        private static readonly Regex HexReg = new Regex(@"^[0-9A-F\r\n]+$");
 
         public static Dictionary<string, AppItem> _appsList;
         public static Dictionary<string, AppItem> AppsList
@@ -46,19 +68,31 @@ namespace AppStoreServer
         public static void ResetAppList()
         {
             _appsList = null;
-        }        
+        }
+
+        internal static string GetFullImagePath(string imageName)
+        {
+            if (!(HexReg.Match(imageName).Success && File.Exists(System.IO.Path.Combine(AppDirectory, Shared.IconsDirectoryName, imageName + ".png"))))
+            {
+                return FileIconPath;
+            }
+            else
+            {
+                return System.IO.Path.Combine(AppDirectory, Shared.IconsDirectoryName, imageName + ".png");
+            }
+        }
 
         #region Constructors
 
         public AppItem()
         {
-
+            childernCount = -1;
         }
 
         public AppItem(string id, bool isFolder, string parentId, FileSystemInfo item)
         {
             Id = id;
-            Name = item.Name;
+            Name = System.IO.Path.GetFileNameWithoutExtension(item.Name);
             Path = item.FullName.Replace(AppDirectory, "");
             if (isFolder)
             {
@@ -68,18 +102,27 @@ namespace AppStoreServer
             {
                 Type = item.Extension.ToLower() switch
                 {
-                    "iso" => ItemType.ISO,
-                    "txt" => ItemType.Text,
+                    ".iso" => ItemType.ISO,
+                    ".txt" => ItemType.Text,
                     _ => ItemType.File
                 };
-                
+
                 FileSize = (item as FileInfo).Length;
             }
             FileDateModified = item.LastWriteTimeUtc;
-            ImagePath = System.IO.Path.Combine("$ICONS", Shared.HashText(item.FullName) + ".png");
-            FullImagePath = System.IO.Path.Combine(AppDirectory, ImagePath);
+            ImageName = Shared.HashText(item.FullName);
+            if (!File.Exists(System.IO.Path.Combine(AppDirectory, Shared.IconsDirectoryName, $"{ImageName}.png")))
+            {
+                ImageName = Shared.HashText(Type switch
+                {
+                    ItemType.Folder => "FOLDER",
+                    ItemType.ISO => "ISO",
+                    ItemType.Text => "TEXT",
+                    _ => "APPLICATION"
+                });
+            }
             ParentId = parentId;
-
+            childernCount = -1;
         }
 
         #endregion
@@ -95,9 +138,7 @@ namespace AppStoreServer
 
         internal DateTime FileDateModified { get; set; }
 
-        public string ImagePath { get; set; }
-
-        internal string FullImagePath { get; set; }
+        public string ImageName { get; set; }
 
         internal long FileSize { get; set; }
 
@@ -107,6 +148,13 @@ namespace AppStoreServer
 
         #region Read Only Properties
 
+        private static string FileIconPath
+        {
+            get
+            {
+                return System.IO.Path.Combine(AppDirectory, Shared.IconsDirectoryName, $"{Shared.HashText("APPLICATION")}.png");
+            }
+        }
         public bool IsFolder
         {
             get
@@ -115,11 +163,30 @@ namespace AppStoreServer
             }
         }
 
-        public string Size
+        private int childernCount;
+
+        private int ChildernCount
         {
             get
             {
-                return Shared.FriendlyFileSize(FileSize, 2);
+                if (!IsFolder)
+                {
+                    childernCount = 0;
+                }
+
+                if (childernCount == -1 && IsFolder)
+                {
+                    childernCount = AppsList.Values.Count(x => x.ParentId == Id);
+                }
+                return childernCount;
+            }
+        }
+
+        public string Content
+        {
+            get
+            {
+                return IsFolder ? $"{ChildernCount} item{(ChildernCount == 1 ? "" : "s")}" : Shared.FriendlyFileSize(FileSize, 2);
             }
         }
 
@@ -215,6 +282,9 @@ namespace AppStoreServer
 
     public static class Shared
     {
+        private static MD5 md5Hash = MD5.Create();
+        internal static string IconsDirectoryName = "$ICONS";
+
         internal static string FriendlyFileSize(double SizeInByte, int round)
         {
             if (SizeInByte < 1)
@@ -230,7 +300,9 @@ namespace AppStoreServer
 
         internal static string HashText(string Text)
         {
-            return Text.GetHashCode().ToString("X");
+            byte[] hashResult = md5Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(Text));
+            var result = BitConverter.ToString(hashResult).Replace("-", "");
+            return result;
         }
 
         private static string FileSizeUnit(byte num) => num switch

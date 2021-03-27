@@ -1,0 +1,15 @@
+﻿
+
+<li @onclick="@(e => { if (!isActive) ActivateMe(); })" style="cursor: @(isActive ? "default" : "pointer")" class="breadcrumb-item @(isActive ? " active" : "")" title="@item.Name">@item.Name</li>
+
+@code {
+    [Parameter] public AppItem item { get; set; } = null;
+    [Parameter] public bool isActive { get; set; }
+    [Parameter] public Func<AppItem, Task> ClickCallback { get; set; }
+
+    void ActivateMe()
+    {
+        StateHasChanged();
+        ClickCallback(item);
+    }
+}

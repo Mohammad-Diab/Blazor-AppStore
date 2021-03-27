@@ -13,7 +13,7 @@ namespace AppStoreServer.Controllers
     public class AppsController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<IAppItem> GetApps(string appId = "")
+        public IEnumerable<IAppItem> GetApps(string appId = "root")
         {
             return Logic.GetApps(appId: appId);
         }
@@ -22,6 +22,14 @@ namespace AppStoreServer.Controllers
         public IEnumerable<IAppItem> SearchInApps(string filterText = "")
         {
             return Logic.GetApps(filterText: filterText);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetImageAsync(string ImageName)
+        {
+            Random Rand = new Random();
+            await Task.Delay(Rand.Next(10, 100));
+            return File(Logic.ReadImage(ImageName), "image/png");
         }
 
     }

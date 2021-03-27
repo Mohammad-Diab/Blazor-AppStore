@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStore", "AppStore\AppSto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppStoreServer", "AppStoreServer\AppStoreServer.csproj", "{C11CF0EF-9C31-41F0-837C-C480C435FFE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLibraries", "SharedLibraries\SharedLibraries.csproj", "{FCC24A44-5984-480F-8033-34327C8EDB62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibraries", "SharedLibraries\SharedLibraries.csproj", "{FCC24A44-5984-480F-8033-34327C8EDB62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
