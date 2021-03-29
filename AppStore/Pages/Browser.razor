@@ -17,8 +17,15 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
         </ul>
-        <div class="form-inline my-2 my-lg-0">
-            <input @bind="FilterText" @bind:event="oninput" class="form-control mr-sm-2" type="text" placeholder="Filter..." aria-label="Search">
+
+        <div style="position: relative" class="input-group">
+            <input type="text" class="form-control" placeholder="filter..." style="border-radius: .25rem; padding-right: 32px;" @bind="FilterText" @bind:event="oninput">
+            @if (!string.IsNullOrEmpty(FilterText))
+            {
+                <button @onclick="@(()=> { FilterText = ""; })" type="button" class="btn bg-transparent" style="position: absolute; right: 2px; z-index: 100; padding: .35rem .5rem;">
+                    <span style="font-size: 0.8rem; color: gray; top: -.5px;" class="oi oi-x"></span>
+                </button>
+            }
         </div>
     </div>
 </nav>
