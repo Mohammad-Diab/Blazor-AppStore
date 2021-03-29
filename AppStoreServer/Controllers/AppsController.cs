@@ -32,5 +32,11 @@ namespace AppStoreServer.Controllers
             return File(Logic.ReadImage(ImageName), "image/png");
         }
 
+        [HttpGet]
+        public JsonResult GetFileContent(string FileId)
+        {
+            return new JsonResult(Logic.ReadFile(FileId));
+        }
+
     }
 }

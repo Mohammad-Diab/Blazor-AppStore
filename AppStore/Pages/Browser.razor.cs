@@ -1,9 +1,11 @@
-﻿using System;
+﻿using AppStore.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace AppStore.Pages
 {
@@ -12,13 +14,50 @@ namespace AppStore.Pages
         private AppItem currentItem;
         List<AppItem> breadcrumbList;
         List<AppItem> contentList;
+        List<AppItem> fullList;
+        Modal ModalRef;
+
+        string _filterText;
+        string FilterText
+        {
+            get
+            {
+                return _filterText;
+            }
+            set
+            {
+                TextChanged(value);
+            }
+        }
+
+        Timer filterTimer;
+
+        void InitializeTimer()
+        {
+            filterTimer = new Timer();
+            filterTimer.Interval = 300;
+            filterTimer.AutoReset = false;
+            filterTimer.Elapsed += (object sender, ElapsedEventArgs args) =>
+            {
+                FilterTheList();
+            };
+        }
+
+        void TextChanged(string value)
+        {
+            _filterText = value?.ToLower() ?? "";
+            filterTimer?.Stop();
+            filterTimer?.Start();
+        }
 
         async protected override Task OnInitializedAsync()
         {
             breadcrumbList = new List<AppItem>();
-            AppItem app = new AppItem("root", "root", true, SharedLibraries.ItemType.Folder, "", "", "");
+            fullList = new List<AppItem>();
+            InitializeTimer();
+            AppItem app = new AppItem("root", "root", "", "root", true, SharedLibraries.ItemType.Folder, 0, "", "", "");
             await GetDataFromServer(app);
-            base.OnInitialized();
+            await base.OnInitializedAsync();
         }
 
         public async Task Navigate(AppItem item)
@@ -29,7 +68,7 @@ namespace AppStore.Pages
             }
             else
             {
-                
+                ShowModal(item);
             }
             StateHasChanged();
         }
@@ -47,11 +86,7 @@ namespace AppStore.Pages
                     }
                 }
 
-               await  GetDataFromServer(item);
-            }
-            else
-            {
-
+                await GetDataFromServer(item);
             }
             StateHasChanged();
         }
@@ -61,13 +96,46 @@ namespace AppStore.Pages
             currentItem = item;
             breadcrumbList.Add(item);
             contentList = null;
+            FilterText = "";
+            filterTimer?.Stop();
             StateHasChanged();
-            using (HttpClient request = new HttpClient())
+            using HttpClient request = new HttpClient();
+            var requestResult = await request.GetFromJsonAsync<List<AppItem>>($"{Config.ApiUrl}GetApps?appId={item.Id}");
+            contentList = new List<AppItem>();
+            contentList.AddRange(requestResult);
+            fullList.Clear();
+            fullList.AddRange(requestResult);
+        }
+
+        void FilterTheList()
+        {
+            if (!(contentList is null && fullList is null))
             {
-                var requestResult = await request.GetFromJsonAsync<List<AppItem>>($"{Config.ApiUrl}GetApps?appId={item.Id}");
+                contentList = null;
+                StateHasChanged();
+
+                var result = fullList.Where(x => x.Name.ToLower().Contains(FilterText) || (!x.IsFolder && x.Extension.ToLower().Equals(FilterText)));
                 contentList = new List<AppItem>();
-                contentList.AddRange(requestResult);
+                contentList.AddRange(result);
+                StateHasChanged();
             }
+        }
+
+        public async void ShowModal(AppItem item)
+        {
+            var Result = await ModalRef.ShowModal(item);
+
+            //if (Result == DialogResult.Cancel)
+            //{
+            //    InModalGridObj.ClearSelectedList();
+            //}
+            //InModalGridSelectedUsers = InModalGridObj.GetSelectedItems();
+            //StateHasChanged();
+        }
+
+        void Dispose()
+        {
+            filterTimer?.Dispose();
         }
 
     }

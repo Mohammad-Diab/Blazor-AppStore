@@ -1,0 +1,42 @@
+﻿@if (string.IsNullOrEmpty(fileContent))
+{
+    <div class="p-2 d-flex">
+        <div style="flex: 0 0 auto; align-self: center;" class="mr-4 p-1">
+            <img style="width: 192px;" src="@($"{Config.ApiUrl}GetImage?ImageName={item.ImageName}")">
+        </div>
+        <div style="flex: 1 1 auto; align-self: center;" class="item-text">
+            <div class="mb-2 lead" title="@item.Name"><span class="font-weight-normal">@item.Name</span></div>
+            <div class="mb-2 lead" title="@item.Location">Path: <span class="font-weight-normal">@($"root\\{item.Location}")</span></div>
+            <div class="mb-2 lead" title="@item.DateModified">Last Modified: <span class="font-weight-normal">@item.DateModified</span></div>
+            <div class="mb-2 lead" title="@item.Content">Size: <span class="font-weight-normal">@item.Content</span></div>
+        </div>
+    </div>
+}
+else
+{
+    <p>
+        @fileContent
+    </p>
+}
+
+@code {
+    [Parameter] public AppItem item { get; set; }
+    string fileContent;
+
+    async protected override Task OnInitializedAsync()
+    {
+        if (item.Type == SharedLibraries.ItemType.Text && item.Size < SharedLibraries.Settings.MaxViewableFileSize)
+        {
+            using (HttpClient request = new HttpClient())
+            {
+                var requestResult = await request.GetFromJsonAsync<string>($"{Config.ApiUrl}GetFileContent?FileId={item.Id}");
+                if (!string.IsNullOrEmpty(requestResult))
+                {
+                    fileContent = requestResult;
+                }
+            }
+        }
+        await base.OnInitializedAsync();
+    }
+}
+

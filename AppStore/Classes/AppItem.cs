@@ -10,9 +10,12 @@ namespace AppStore
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Extension { get; set; }
+        public string Location { get; set; }
         public bool IsFolder { get; set; }
         public ItemType Type { get; set; }
         public string Content { get; set; }
+        public long Size { get; set; }
         public string DateModified { get; set; }
         public string ImageName { get; set; }
 
@@ -21,13 +24,16 @@ namespace AppStore
 
         }
 
-        public AppItem(string id, string name, bool isFolder, ItemType type, string content, string dateModified, string imagePath)
+        public AppItem(string id, string name, string extension, string location, bool isFolder, ItemType type, long size, string content, string dateModified, string imagePath)
         {
             Id = id;
             Name = name;
+            Extension = extension;
+            Location = location;
             IsFolder = isFolder;
             Type = type;
             Content = content;
+            Size = size;
             DateModified = dateModified;
             ImageName = imagePath;
         }

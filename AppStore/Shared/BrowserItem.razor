@@ -32,14 +32,16 @@ else
         base.OnInitialized();
     }
 
-    async Task ActivateMe() {
-        if (!additionalClass.Contains("active"))
-            additionalClass += " active";
-        await Task.Delay(300);
-        additionalClass = "";
-        if (!item.IsFolder)
+    async Task ActivateMe()
+    {
+
+        if (item.IsFolder)
         {
-            StateHasChanged();
+            if (!additionalClass.Contains("active"))
+            {
+                additionalClass += " active";
+            }
+            await Task.Delay(150);
         }
 
         await ClickCallback(item);

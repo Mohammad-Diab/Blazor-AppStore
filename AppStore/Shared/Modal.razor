@@ -1,0 +1,116 @@
+﻿@if (IsShown && !(currentItem is null))
+{
+    <div class="modal @(IsShown ? "show d-block" : "")" tabindex="-1" role="dialog">
+        <div style="z-index: unset;" class="modal-backdrop @(IsShown ? "show" : "d-none")" @onclick="FocusModal"></div>
+        <div class="modal-dialog modal-lg modal-dialog-centered animate__animated animate__faster @AnimateClassName" role="document">
+            <div class="modal-content animate__animated animate__fast @FocusClassName">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">@currentItem.Name</h5>
+                    <button type="button" class="close" @onclick="Close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div style="max-height: calc(100vh - 200px); overflow: auto;" class="modal-body">
+                    <ViewFile item="@currentItem" />
+                </div>
+                <div style="justify-content: center;" class="modal-footer text-center">
+                    <button style="min-width: 120px" type="button" class="btn btn-success" @onclick="Download">Download</button>
+                    @if (currentItem.Type == SharedLibraries.ItemType.ISO)
+                    {
+                        <button style="min-width: 120px" type="button" class="btn btn-primary" @onclick="MountISO">Mount ISO</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code{
+
+    [Parameter] public ModalShowAnimation ShowAnimation { get; set; }
+    AppItem currentItem { get; set; }
+
+    ModalConfirmButton ConfirmType { get; set; }
+
+    bool IsShown = false;
+
+    string AnimateClassName = "animate__bounceIn";
+    string entrancesAnimationName = "animate__zoomIn";
+    string emphasisAnimationName = "animate__tada";
+    string exitsAnimationName = "animate__bounceOut";
+    string FocusClassName = "";
+
+    DialogResult Result = DialogResult.Undefiend;
+
+    bool IsAnimating = false;
+
+    public async Task<DialogResult> ShowModal(AppItem item)
+    {
+        currentItem = item;
+        AnimateClassName = entrancesAnimationName;
+
+        Result = DialogResult.Undefiend;
+
+        IsShown = true;
+
+        StateHasChanged();
+
+        while (Result == DialogResult.Undefiend)
+        {
+            await Task.Delay(50);
+        }
+
+        return Result;
+    }
+
+    public async void FocusModal()
+    {
+
+        if (IsAnimating)
+        {
+            return;
+        }
+
+        IsAnimating = true;
+
+        FocusClassName = emphasisAnimationName;
+
+        await Task.Delay(600);
+
+        FocusClassName = "";
+
+        IsAnimating = false;
+
+        StateHasChanged();
+    }
+
+
+    public async void CloseModal()
+    {
+
+        AnimateClassName = exitsAnimationName;
+
+        await Task.Delay(500);
+
+        IsShown = false;
+
+        StateHasChanged();
+
+        AnimateClassName = entrancesAnimationName;
+    }
+
+    public void Download()
+    {
+        Console.WriteLine("Downloading...");
+    }
+
+    public void MountISO()
+    {
+        Console.WriteLine("Mounting ISO...");
+    }
+
+    public void Close()
+    {
+        CloseModal();
+    }
+}
