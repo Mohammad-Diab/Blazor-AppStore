@@ -120,6 +120,7 @@ app {
     transition: all 0.3s;
     cursor: pointer;
     max-width: 320px;
+    min-width: 240px;
     animation-fill-mode: backwards !important;
     border: solid 1px gray;
     display: flex;
