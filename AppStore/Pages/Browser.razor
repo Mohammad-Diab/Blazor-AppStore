@@ -2,44 +2,38 @@
 
 <Modal @ref="ModalRef" ShowAnimation="ModalShowAnimation.BounceIn" />
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div style="flex: 1 1 100%; display: flex; align-content: space-evenly;">
-        <div>
-            <a href="./">
-                <span class="oi-media-skip-backward">back</span>
+<nav class="navbar navbar-expand-lg py-1 browser-navbar">
+    <div class="d-flex flex-auto align-space-evenly">
+        <div class="align-self-center flex-nowrap white-space-nowrap" style="flex: 0 0 140px;">
+            <a class="btn btn-outline-secondary text-secondary bg-transparent mr-2 back-btn" href="./" title="Go back.">
+                <span class="oi oi-arrow-circle-left"></span>
             </a>
-            <span class="navbar-brand">Browser</span>
+            <span style="padding-top: 2px;" class="navbar-brand align-middle">Browser</span>
         </div>
-        <div style="flex: 1 1 auto; overflow: hidden; text-align: center;">
-            <span style="text-overflow: ellipsis; overflow: hidden; max-width: calc(100vw - 480px);" class="navbar-brand mr-0">@currentItem.Name</span>
+        <div class="flex-auto overflow-hidden text-center align-self-center">
+            <span class="navbar-brand mr-0 header-text">@currentItem.Name</span>
         </div>
     </div>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-        </ul>
-
-        <div style="position: relative" class="input-group">
-            <input type="text" class="form-control" placeholder="filter..." style="border-radius: .25rem; padding-right: 32px;" @bind="FilterText" @bind:event="oninput">
-            @if (!string.IsNullOrEmpty(FilterText))
-            {
-                <button @onclick="@(()=> { FilterText = ""; })" type="button" class="btn bg-transparent" style="position: absolute; right: 2px; z-index: 100; padding: .35rem .5rem;">
-                    <span style="font-size: 0.8rem; color: gray; top: -.5px;" class="oi oi-x"></span>
-                </button>
-            }
+    <div style="flex: 0 0 208px;">
+        <div class="input-group position-relative">
+            <input type="text" class="form-control filter-input" placeholder="filter..." @bind="FilterText" @bind:event="oninput">
+            <button @onclick="@(() => { FilterText = ""; })" type="button" class="btn bg-transparent filter-input-button" disabled="@string.IsNullOrEmpty(FilterText)">
+                <span class="oi @(string.IsNullOrEmpty(FilterText) ? "oi-magnifying-glass" : "oi-x")"></span>
+            </button>
         </div>
     </div>
 </nav>
 
 <div class="container mt-4">
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
+        <ol class="breadcrumb bg-light border-gray">
             @foreach (var item in breadcrumbList)
             {
                 <BreadcrumbItem isActive="item.Id==currentItem.Id" item="item" ClickCallback="NavigateBack" />
             }
         </ol>
     </nav>
-    <div id="presentation">
+    <div class="bg-light py-4 border-gray border-radius" id="presentation">
         @if (contentList is null)
         {
             <div class="text-center">Loading...</div>
