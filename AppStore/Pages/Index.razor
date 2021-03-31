@@ -1,11 +1,44 @@
 ﻿@page "/"
 
-<h1 class="text-center">Search here!</h1>
-<div class="form-group">
-    <input class="form-control" type="text" />
+<style>
+    body {
+        background: url('images/background.jpg');
+        background-size: cover;
+    }
+</style>
+
+<a class="btn custom-btn bg-transparent position-absolute text-dark btn-outline-dark" style="top: 8px; left: 16px;" href="./browser/">
+    <span class="oi oi-grid-three-up mr-2 align-middle"></span>
+    <span style="top: 1px;" class="align-middle position-relative">All apps</span>
+</a>
+
+<div style="display: grid; height: 100vh;">
+    <div></div>
+    <div>
+        <div class="text-center">
+            <img class="store-search-icon" src="images/search-icon.png" alt="Store search icon" />
+        </div>
+        <div class="form-group">
+            <div class="input-group position-relative m-auto" style="width: 50%; max-width: 80vw; min-width: 300px;">
+                <input type="text" class="form-control filter-input form-control-lg" placeholder="Search everywhere..." @bind="FilterText" @bind:event="oninput">
+                <button @onclick="@(() => { FilterText = ""; })" type="button" class="btn bg-transparent filter-input-button form-control-lg" disabled="@string.IsNullOrEmpty(FilterText)">
+                    <span class="oi @(string.IsNullOrEmpty(FilterText) ? "oi-magnifying-glass" : "oi-x")"></span>
+                </button>
+            </div>
+        </div>
+        <div>
+            <div class="text-center">
+                <div class="mb-2" style="font-weight: 500; font-size: 1.25rem;">—— OR ——</div>
+                <span style="font-size: 1.4rem;" class="lead">
+                    <span>You can browse all apps from </span>
+                    <a href="./browser/" style="font-style: italic; text-decoration: underline;">here</a>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div></div>
 </div>
 
-<div>
-    <h1 class="text-center font-weight-bold">OR</h1>
-    <h4 class="text-center">you can browse apps from <a href="./browser/">here</a></h4>
-</div>
+@code{
+    string FilterText = "";
+}

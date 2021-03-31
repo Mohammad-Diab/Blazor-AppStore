@@ -46,7 +46,9 @@ app {
 }
 
 @media (max-width: 767.98px) {
-
+    img.store-search-icon {
+        width: 128px;
+    }
 }
 
 @media (min-width: 768px) {
@@ -71,8 +73,12 @@ app {
 
 .back-btn {
     line-height: 20px;
-    font-size: 1.2rem;
-    border: none !important;
+}
+
+.custom-btn {
+    font-size: 1.125rem;
+    border: none;
+    z-index: 1;
 }
 
 .header-text {
@@ -164,11 +170,20 @@ app {
     padding-right: 32px;
 }
 
+.filter-input.form-control-lg {
+    padding-right: 32px;
+}
+
 .filter-input-button {
     position: absolute;
     right: 2px;
     z-index: 100;
     padding: .35rem .5rem;
+}
+
+.form-control-lg.filter-input-button {
+    padding: .375rem .75rem;
+    height: calc(1.5em + 1rem + 7px);
 }
 
 .filter-input-button .oi.oi-x {
@@ -177,12 +192,27 @@ app {
     top: -.5px;
 }
 
+.form-control-lg.filter-input-button .oi.oi-x {
+    font-size: 1.2rem;
+    top: 1.5px;
+}
+
 .filter-input-button .oi.oi-magnifying-glass {
     font-size: 0.9rem;
     color: dimgray;
 }
 
-@keyframes zoom{
+.form-control-lg.filter-input-button .oi.oi-magnifying-glass {
+    font-size: 1.2rem;
+    top: 3px;
+}
+
+.store-search-icon {
+    width: 192px;
+    height: auto;
+}
+
+@keyframes zoom {
     from {
         filter: none;
         transform: scale(1.05);

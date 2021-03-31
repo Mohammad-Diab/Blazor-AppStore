@@ -1,14 +1,13 @@
 ﻿@page "/Browser"
 
 <Modal @ref="ModalRef" ShowAnimation="ModalShowAnimation.BounceIn" />
-
 <nav class="navbar navbar-expand-lg py-1 browser-navbar">
     <div class="d-flex flex-auto align-space-evenly">
         <div class="align-self-center flex-nowrap white-space-nowrap" style="flex: 0 0 140px;">
-            <a class="btn btn-outline-secondary text-secondary bg-transparent mr-2 back-btn" href="./" title="Go back.">
+            <a class="btn btn-outline-secondary back-btn custom-btn text-secondary bg-transparent mr-2" href="./" title="Go back.">
                 <span class="oi oi-arrow-circle-left"></span>
             </a>
-            <span style="padding-top: 2px;" class="navbar-brand align-middle">Browser</span>
+            <span style="padding-top: 1px;" class="navbar-brand align-middle">Browser</span>
         </div>
         <div class="flex-auto overflow-hidden text-center align-self-center">
             <span class="navbar-brand mr-0 header-text">@currentItem.Name</span>
