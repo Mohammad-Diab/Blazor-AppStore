@@ -7,6 +7,10 @@
     }
 </style>
 
+<div style="z-index: 2; opacity: 0;" class="modal-backdrop @(isOpenedDropdown ? "show" : "d-none")" @onclick="HideDropdown"></div>
+
+<Modal @ref="ModalRef" ShowAnimation="ModalShowAnimation.BounceIn" />
+
 <a class="btn custom-btn bg-transparent position-absolute text-dark btn-outline-dark" style="top: 8px; left: 16px;" href="./browser/">
     <span class="oi oi-grid-three-up mr-2 align-middle"></span>
     <span style="top: 1px;" class="align-middle position-relative">All apps</span>
@@ -19,11 +23,33 @@
             <img class="store-search-icon" src="images/search-icon.png" alt="Store search icon" />
         </div>
         <div class="form-group">
-            <div class="input-group position-relative m-auto" style="width: 50%; max-width: 80vw; min-width: 300px;">
-                <input type="text" class="form-control filter-input form-control-lg" placeholder="Search everywhere..." @bind="FilterText" @bind:event="oninput">
-                <button @onclick="@(() => { FilterText = ""; })" type="button" class="btn bg-transparent filter-input-button form-control-lg" disabled="@string.IsNullOrEmpty(FilterText)">
-                    <span class="oi @(string.IsNullOrEmpty(FilterText) ? "oi-magnifying-glass" : "oi-x")"></span>
-                </button>
+            <div class="position-relative m-auto w-50" style="max-width: 80vw; min-width: 300px;">
+                <div class="input-group">
+                    <input type="text" class="form-control filter-input form-control-lg" placeholder="Search everywhere..." @bind="FilterText" @bind:event="oninput" @onfocus="ShowDropdown">
+                    <button @onclick="@(() => { FilterText = ""; })" type="button" class="btn bg-transparent filter-input-button form-control-lg" disabled="@string.IsNullOrEmpty(FilterText)">
+                        <span class="oi @(string.IsNullOrEmpty(FilterText) ? "oi-magnifying-glass" : "oi-x")"></span>
+                    </button>
+                </div>
+                <div class="search-dropdown-menu dropdown-menu overflow-auto w-100 mt-2 light-zoomIn @(isOpenedDropdown?"d-block":"")">
+
+                    @if (searchResultList?.Count > 0)
+                    {
+                        if (string.IsNullOrEmpty(FilterText))
+                        {
+                            <h6 class="dropdown-header text-info">Last accessed apps.</h6>
+                        }
+                        foreach (var item in searchResultList)
+                        {
+                            <SearchItem ClickCallback="Navigate" item="item" />
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center my-1 lead text-secondary">
+                            @(searchResultList is null ? (string.IsNullOrEmpty(FilterText) ? "Start typing to search!" : "Loading...") : "No data match your search.")
+                        </div>
+                    }
+                </div>
             </div>
         </div>
         <div>
@@ -40,5 +66,106 @@
 </div>
 
 @code{
-    string FilterText = "";
+    string _filterText;
+    string FilterText
+    {
+        get
+        {
+            return _filterText;
+        }
+        set
+        {
+            TextChanged(value);
+        }
+    }
+
+    bool isOpenedDropdown = false;
+    Modal ModalRef;
+
+    List<AppItem> searchResultList;
+
+    void HideDropdown()
+    {
+        //FilterText = "";
+        //searchResultList = null;
+        isOpenedDropdown = false;
+    }
+
+    void ShowDropdown()
+    {
+        isOpenedDropdown = true;
+    }
+
+    public void Navigate(AppItem item)
+    {
+        HideDropdown();
+        ShowModal(item);
+        StateHasChanged();
+    }
+
+    public async void ShowModal(AppItem item)
+    {
+        await ModalRef.ShowModal(item);
+    }
+
+    System.Timers.Timer filterTimer;
+
+    void InitializeTimer()
+    {
+        filterTimer = new System.Timers.Timer();
+        filterTimer.Interval = 300;
+        filterTimer.AutoReset = false;
+        filterTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs args) =>
+        {
+            _ = Search();
+        };
+    }
+
+    void TextChanged(string value)
+    {
+        _filterText = value?.ToLower() ?? "";
+        filterTimer?.Stop();
+        filterTimer?.Start();
+    }
+
+    async Task Search()
+    {
+        searchResultList = null;
+        StateHasChanged();
+
+        List<AppItem> result;
+        if (string.IsNullOrEmpty(FilterText))
+        {
+            result = await GetLastAccessedApps();
+        }
+        else
+        {
+            result = await GetDataFromServer();
+        }
+        searchResultList = new List<AppItem>();
+        searchResultList.AddRange(result);
+        StateHasChanged();
+    }
+
+    private async Task<List<AppItem>> GetDataFromServer()
+    {
+        using HttpClient request = new HttpClient();
+        return await request.GetFromJsonAsync<List<AppItem>>($"{Config.ApiUrl}SearchInApps?filterText={FilterText}");
+    }
+
+    private async Task<List<AppItem>> GetLastAccessedApps()
+    {
+        using HttpClient request = new HttpClient();
+        return await request.GetFromJsonAsync<List<AppItem>>($"{Config.ApiUrl}GetLastAccessedApps");
+    }
+
+    protected override void OnInitialized()
+    {
+        InitializeTimer();
+    }
+
+    void Dispose()
+    {
+        filterTimer?.Dispose();
+    }
 }

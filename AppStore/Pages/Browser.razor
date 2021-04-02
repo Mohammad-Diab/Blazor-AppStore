@@ -33,23 +33,11 @@
         </ol>
     </nav>
     <div class="bg-light py-4 border-gray border-radius" id="presentation">
-        @if (contentList is null)
-        {
-            <div class="text-center">Loading...</div>
-        }
-        else if (contentList.Count == 0 && fullList.Count > 0)
-        {
-            <div class="text-center">No data match your search.</div>
-        }
-        else if (contentList.Count == 0)
-        {
-            <div class="text-center">No data to show.</div>
-        }
-        else
+
+        @if (contentList?.Count > 0)
         {
             <div class="content">
                 @{
-                    Random rand = new Random();
                     for (int i = 0; i < contentList.Count; i++)
                     {
                         <BrowserItem ClickCallback="Navigate" item="contentList[i]" />
@@ -62,6 +50,11 @@
                 }
             </div>
         }
-
+        else
+        {
+            <div class="text-center my-1 lead text-secondary">
+                @(contentList is null ? "Loading..." : (contentList.Count == 0 && fullList.Count > 0 ? "No data match your search." : "No data to show."))
+            </div>
+        }
     </div>
 </div>

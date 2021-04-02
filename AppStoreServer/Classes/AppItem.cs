@@ -4,14 +4,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace AppStoreServer
 {
     public class AppItem : IAppItem
     {
         private const string AppDirectory = @"C:\AppStore\";
+        private const long UpdateInterval = 3000000000; /* 5 minutes */
+        private const string SyncLockKey = "C9CAEFBE-5754-4753-989C-C05620F536E1";
 
         private static readonly Regex HexReg = new Regex(@"^[0-9A-F\r\n]+$");
+
+        private static long LastUpdatedTime = 0;
 
         public static Dictionary<string, AppItem> _appsList;
         public static Dictionary<string, AppItem> AppsList
@@ -21,8 +26,49 @@ namespace AppStoreServer
                 if (_appsList is null)
                 {
                     _appsList = LoadAllApps();
+                    LastUpdatedTime = DateTime.Now.Ticks;
+                }
+
+                if (DateTime.Now.Ticks - LastUpdatedTime > UpdateInterval)
+                {
+                    _ = UpdateAppsListTask();
                 }
                 return _appsList;
+            }
+        }
+
+        private async static Task UpdateAppsListTask()
+        {
+            await Task.Run(UpdateAppsList);
+            LastUpdatedTime = DateTime.Now.Ticks;
+        }
+
+        private static void UpdateAppsList()
+        {
+            lock (SyncLockKey)
+            {
+                if (DateTime.Now.Ticks - LastUpdatedTime < UpdateInterval)
+                {
+                    return;
+                }
+                foreach (var item in AppsList.Values)
+                {
+                    string fullItemPath = item.Location;
+                    try
+                    {
+                        if (item.IsFolder)
+                        {
+                            item.FileDateModified = Directory.GetLastWriteTimeUtc(fullItemPath);
+                            item.FileDateAccessed = Directory.GetLastAccessTimeUtc(fullItemPath).Ticks;
+                        }
+                        else
+                        {
+                            item.FileDateModified = File.GetLastWriteTimeUtc(fullItemPath);
+                            item.FileDateAccessed = File.GetLastAccessTimeUtc(fullItemPath).Ticks;
+                        }
+                    }
+                    catch (Exception) { }
+                }
             }
         }
 
@@ -77,6 +123,7 @@ namespace AppStoreServer
                 FileSize = (item as FileInfo).Length;
             }
             FileDateModified = item.LastWriteTimeUtc;
+            FileDateAccessed = item.LastAccessTimeUtc.Ticks;
             ImageName = Shared.HashText(item.FullName);
             if (!File.Exists(Path.Combine(AppDirectory, Shared.IconsDirectoryName, $"{ImageName}.png")))
             {
@@ -106,6 +153,8 @@ namespace AppStoreServer
         public ItemType Type { get; set; }
 
         internal DateTime FileDateModified { get; set; }
+
+        internal long FileDateAccessed { get; set; }
 
         public string ImageName { get; set; }
 

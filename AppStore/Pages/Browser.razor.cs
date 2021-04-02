@@ -34,9 +34,11 @@ namespace AppStore.Pages
 
         void InitializeTimer()
         {
-            filterTimer = new Timer();
-            filterTimer.Interval = 300;
-            filterTimer.AutoReset = false;
+            filterTimer = new Timer
+            {
+                Interval = 300,
+                AutoReset = false
+            };
             filterTimer.Elapsed += (object sender, ElapsedEventArgs args) =>
             {
                 FilterTheList();
@@ -123,14 +125,7 @@ namespace AppStore.Pages
 
         public async void ShowModal(AppItem item)
         {
-            var Result = await ModalRef.ShowModal(item);
-
-            //if (Result == DialogResult.Cancel)
-            //{
-            //    InModalGridObj.ClearSelectedList();
-            //}
-            //InModalGridSelectedUsers = InModalGridObj.GetSelectedItems();
-            //StateHasChanged();
+            await ModalRef.ShowModal(item);
         }
 
         void Dispose()

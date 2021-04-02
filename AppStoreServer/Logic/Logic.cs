@@ -24,8 +24,14 @@ namespace AppStoreServer
             else
             {
                 result = AppItem.AppsList.Values.Where(x => !x.IsFolder && x.Name.ToLower().Contains(filterText.ToLower()));
-                result.Union(AppItem.AppsList.Values.Where(x => !x.IsFolder && x.Location.ToLower().Contains(filterText.ToLower()))).Distinct();
+                result = result.Union(AppItem.AppsList.Values.Where(x => !x.IsFolder && x.Location.ToLower().Contains(filterText.ToLower()))).Distinct().Take(5);
             }
+            return result.ToList();
+        }
+
+        internal static IEnumerable<IAppItem> LastAccessedApps()
+        {
+            IEnumerable<AppItem> result = AppItem.AppsList.Values.Where(x => !x.IsFolder).OrderByDescending(x => x.FileDateAccessed).ThenBy(x => x.Name).Take(5);
             return result.ToList();
         }
 

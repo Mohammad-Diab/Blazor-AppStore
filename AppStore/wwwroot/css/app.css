@@ -49,6 +49,9 @@ app {
     img.store-search-icon {
         width: 128px;
     }
+    .search-item-image {
+        width: 32px;
+    }
 }
 
 @media (min-width: 768px) {
@@ -64,7 +67,7 @@ app {
 }
 
 .align-self-center {
-    align-self: center
+    align-self: center;
 }
 
 .white-space-nowrap {
@@ -168,6 +171,7 @@ app {
 .filter-input {
     border-radius: .25rem !important;
     padding-right: 32px;
+    z-index: 3;
 }
 
 .filter-input.form-control-lg {
@@ -212,6 +216,20 @@ app {
     height: auto;
 }
 
+.search-item-image {
+    width: 48px;
+}
+
+.light-zoomIn {
+    animation-name: lightZoomIn;
+    animation-duration: 200ms;
+}
+
+.search-dropdown-menu {
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, .28);
+    max-height: calc(50vh - 76px);
+}
+
 @keyframes zoom {
     from {
         filter: none;
@@ -223,5 +241,17 @@ app {
         filter: blur(8px);
         transform: scale(2);
         opacity: 0.2;
+    }
+}
+
+@keyframes lightZoomIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
     }
 }

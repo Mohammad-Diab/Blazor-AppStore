@@ -25,6 +25,12 @@ namespace AppStoreServer.Controllers
         }
 
         [HttpGet]
+        public IEnumerable<IAppItem> GetLastAccessedApps()
+        {
+            return Logic.LastAccessedApps();
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetImageAsync(string ImageName)
         {
             Random Rand = new Random();
