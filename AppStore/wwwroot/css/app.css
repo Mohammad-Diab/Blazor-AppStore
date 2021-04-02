@@ -9,6 +9,10 @@ html, body {
     background-size: cover;
 }
 
+.main-container > .main > .content {
+    height: 100vh;
+}
+
 a, .btn-link {
     color: #0366d6;
 }
@@ -123,7 +127,6 @@ app {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    height: 100vh;
 }
 
 .browser-item {
