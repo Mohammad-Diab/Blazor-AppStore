@@ -1,12 +1,5 @@
 ﻿@page "/"
 
-<style>
-    body {
-        background: url('images/background.jpg');
-        background-size: cover;
-    }
-</style>
-
 <div style="z-index: 2; opacity: 0;" class="modal-backdrop @(isOpenedDropdown ? "show" : "d-none")" @onclick="HideDropdown"></div>
 
 <Modal @ref="ModalRef" ShowAnimation="ModalShowAnimation.BounceIn" />
@@ -20,7 +13,7 @@
     <div></div>
     <div>
         <div class="text-center">
-            <img class="store-search-icon" src="images/search-icon.png" alt="Store search icon" />
+            <img class="store-search-icon" src="images/search-icon.svg" alt="Store search icon" />
         </div>
         <div class="form-group">
             <div class="position-relative m-auto w-50" style="max-width: 80vw; min-width: 300px;">

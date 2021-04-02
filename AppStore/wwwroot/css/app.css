@@ -4,6 +4,11 @@ html, body {
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 
+.background-image {
+    background: url('../images/background.jpg');
+    background-size: cover;
+}
+
 a, .btn-link {
     color: #0366d6;
 }
@@ -118,6 +123,7 @@ app {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+    height: 100vh;
 }
 
 .browser-item {
@@ -253,5 +259,99 @@ app {
     to {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+.spalsh-screen {
+    position: fixed;
+    display: flex;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    justify-content: center;
+    background-color: #fff;
+    z-index: 100;
+}
+
+.spalsh-screen img.animated-image {
+    width: 80%;
+    min-width: 320px;
+    max-width: 33%;
+    height: auto;
+    align-self: center;
+    animation: spalsh 0.5s cubic-bezier(0, 0, 0, 1) 0.1s forwards;
+    transform: scale(1.3);
+}
+
+div.fixed-text {
+    position: fixed;
+    bottom: 16px;
+    right: 48px;
+    z-index: 101;
+    letter-spacing: 9px;
+    font-size: 1.125rem;
+}
+
+div.fixed-text .bold{
+    font-weight: 400;    
+}
+
+@keyframes spalsh {
+    from {
+        transform: scale(1.3);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+.spalsh-screen.out {
+    animation: splash-slide-right 0.05s ease-out 0.24s forwards;
+}
+
+@keyframes splash-slide-right {
+    from {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    to {
+        transform: translateX(100vw);
+        visibility: hidden;
+    }
+}
+
+.spalsh-screen.out img.animated-image {
+    animation: spalsh-out 0.25s ease-out 0.05s forwards;
+    transform: scale(1);
+}
+
+@keyframes spalsh-out {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(0.75);
+        opacity: 0;
+    }
+}
+
+.main-container {
+    width: 100%;
+    animation: main-slide-right 0.25s ease-out 0.3s forwards;
+    transform: translateX(-100vw);
+}
+
+@keyframes main-slide-right {
+    from {
+        transform: translateX(-100vw);
+    }
+
+    to {
+        transform: translateX(0);
     }
 }

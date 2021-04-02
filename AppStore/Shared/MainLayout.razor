@@ -1,14 +1,19 @@
 ﻿@inherits LayoutComponentBase
-
-@*<div class="sidebar">
-    <NavMenu />
-</div>*@
-
-<div class="main">
-    <div class="content">
-        @Body
+<div class="background-image">
+    <div class="spalsh-screen out">
+        <img class="animated-image" src="images/splash-image.svg" alt="KOD by Modammad™" />
     </div>
-    <div class="bottom-row px-5">
-        <span>© KOD by Mohammad™</span>
+
+    <div class="main-container">
+        <div class="main">
+            <div class="content">
+                @Body
+            </div>
+            <div style="font-size: 1.125rem; font-weight: 300; letter-spacing: 2px;" class="bottom-row px-5">
+                <span>© KOD by Mohammad™</span>
+            </div>
+        </div>
     </div>
 </div>
+
+
