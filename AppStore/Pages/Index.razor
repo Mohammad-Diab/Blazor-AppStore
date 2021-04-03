@@ -2,7 +2,7 @@
 
 <div style="z-index: 2; opacity: 0;" class="modal-backdrop @(isOpenedDropdown ? "show" : "d-none")" @onclick="HideDropdown"></div>
 
-<Modal @ref="ModalRef" ShowAnimation="ModalShowAnimation.BounceIn" />
+<Modal @ref="ModalRef" />
 
 <a class="btn custom-btn bg-transparent position-absolute text-dark btn-outline-dark" style="top: 8px; left: 16px;" href="./browser/">
     <span class="oi oi-grid-three-up mr-2 align-middle"></span>
@@ -96,9 +96,9 @@
         StateHasChanged();
     }
 
-    public async void ShowModal(AppItem item)
+    public void ShowModal(AppItem item)
     {
-        await ModalRef.ShowModal(item);
+        ModalRef.ShowModal(item);
     }
 
     System.Timers.Timer filterTimer;

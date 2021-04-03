@@ -36,10 +36,7 @@
 
 @code{
 
-    [Parameter] public ModalShowAnimation ShowAnimation { get; set; }
     AppItem currentItem { get; set; }
-
-    ModalConfirmButton ConfirmType { get; set; }
 
     bool IsShown = false;
 
@@ -49,27 +46,16 @@
     string exitsAnimationName = "animate__bounceOut";
     string FocusClassName = "";
 
-    DialogResult Result = DialogResult.Undefiend;
-
     bool IsAnimating = false;
 
-    public async Task<DialogResult> ShowModal(AppItem item)
+    public void ShowModal(AppItem item)
     {
         currentItem = item;
         AnimateClassName = entrancesAnimationName;
 
-        Result = DialogResult.Undefiend;
-
         IsShown = true;
 
         StateHasChanged();
-
-        while (Result == DialogResult.Undefiend)
-        {
-            await Task.Delay(50);
-        }
-
-        return Result;
     }
 
     public async void FocusModal()

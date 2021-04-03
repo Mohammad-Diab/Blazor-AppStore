@@ -123,9 +123,9 @@ namespace AppStore.Pages
             }
         }
 
-        public async void ShowModal(AppItem item)
+        public void ShowModal(AppItem item)
         {
-            await ModalRef.ShowModal(item);
+            ModalRef.ShowModal(item);
         }
 
         void Dispose()
