@@ -110,24 +110,9 @@
 
     public void Download()
     {
-        using HttpClient request = new HttpClient();
-        _ = request.GetStreamAsync($"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}");
-        Close();
-        //using (var dd = new System.IO.StreamWriter(System.IO.File.OpenWrite("file1.txt")))
-        //{
-        //    int i = 0;
-        //    while (i < 20)
-        //    {
-        //        dd.WriteLine($"Hi There {i}.");
-        //        i++;
-        //    }
-        //    dd.Close();
-        //    using (var f = System.IO.File.OpenText("file1.txt"))
-        //    {
-        //        Console.WriteLine(f.ReadToEnd());
-        //        f.Close();
-        //    }
-        //}
+        //using HttpClient request = new HttpClient();
+        //_ = request.GetStreamAsync($"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}");
+        //Close();
     }
 
     public void MountISO()
