@@ -6,7 +6,7 @@
             <div class="modal-content animate__animated animate__fast @FocusClassName">
                 <div class="modal-header">
                     <h5 class="modal-title overflow-ellipsis" id="exampleModalLabel">@currentItem.Name</h5>
-                    <button type="button" class="close" @onclick="Close" aria-label="Close">
+                    <button type="button" class="close" @onclick="CloseModal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -98,7 +98,7 @@
     {
         //using HttpClient request = new HttpClient();
         //_ = request.GetStreamAsync($"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}");
-        Close();
+        CloseModal();
     }
 
     public void MountISO()
@@ -106,8 +106,4 @@
         Console.WriteLine("Mounting ISO...");
     }
 
-    public void Close()
-    {
-        CloseModal();
-    }
 }
