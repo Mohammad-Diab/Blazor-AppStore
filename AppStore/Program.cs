@@ -19,6 +19,10 @@ namespace AppStore
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+            string apiUrl = builder.Configuration.GetValue<string>("ApiUrl");
+            long maxViewableFileSize = builder.Configuration.GetValue<long>("MaxViewableFileSize");
+
+            Config.SetConfig(apiUrl, maxViewableFileSize);
             await builder.Build().RunAsync();
         }
     }

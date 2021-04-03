@@ -25,7 +25,7 @@ else
 
     async protected override Task OnInitializedAsync()
     {
-        if (item.Type == SharedLibraries.ItemType.Text && item.Size < SharedLibraries.Settings.MaxViewableFileSize)
+        if (item.Type == SharedLibraries.ItemType.Text && item.Size < Config.MaxViewableFileSize)
         {
             using (HttpClient request = new HttpClient())
             {

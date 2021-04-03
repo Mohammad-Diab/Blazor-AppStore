@@ -10,8 +10,6 @@ namespace AppStoreServer
 {
     public class AppItem : IAppItem
     {
-        private static string AppDirectory = @"C:\AppStore\";
-        private const long UpdateInterval = 3000000000; /* 5 minutes */
         private const string SyncLockKey = "C9CAEFBE-5754-4753-989C-C05620F536E1";
 
         private static readonly Regex HexReg = new Regex(@"^[0-9A-F\r\n]+$");
@@ -29,17 +27,12 @@ namespace AppStoreServer
                     LastUpdatedTime = DateTime.Now.Ticks;
                 }
 
-                if (DateTime.Now.Ticks - LastUpdatedTime > UpdateInterval)
+                if (DateTime.Now.Ticks - LastUpdatedTime > Config.UpdateInterval)
                 {
                     _ = UpdateAppsListTask();
                 }
                 return _appsList;
             }
-        }
-
-        internal static string GetAppDirectory()
-        {
-            return AppDirectory;
         }
 
         private async static Task UpdateAppsListTask()
@@ -52,7 +45,7 @@ namespace AppStoreServer
         {
             lock (SyncLockKey)
             {
-                if (DateTime.Now.Ticks - LastUpdatedTime < UpdateInterval)
+                if (DateTime.Now.Ticks - LastUpdatedTime < Config.UpdateInterval)
                 {
                     return;
                 }
@@ -79,7 +72,7 @@ namespace AppStoreServer
 
         internal static string GetFdmPath(string os, string architecture)
         {
-            string path = Path.Combine(AppDirectory, Shared.ExtraAppsDirectoryName, "fdm.exe");
+            string path = Path.Combine(Config.AppDirectory, Config.ExtraAppsDirectoryName, "fdm.exe");
             return File.Exists(path) ? path : "";
         }
 
@@ -90,19 +83,19 @@ namespace AppStoreServer
 
         internal static string GetFullImagePath(string imageName)
         {
-            if (!(HexReg.Match(imageName).Success && File.Exists(Path.Combine(AppDirectory, Shared.IconsDirectoryName, imageName + ".png"))))
+            if (!(HexReg.Match(imageName).Success && File.Exists(Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, imageName + ".png"))))
             {
                 return FileIconPath;
             }
             else
             {
-                return Path.Combine(AppDirectory, Shared.IconsDirectoryName, imageName + ".png");
+                return Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, imageName + ".png");
             }
         }
 
         internal string GetFullPath()
         {
-            return Path.Combine(AppDirectory, Location);
+            return Path.Combine(Config.AppDirectory, Location);
         }
 
         #region Constructors
@@ -117,7 +110,7 @@ namespace AppStoreServer
             Id = id;
             Name = Path.GetFileNameWithoutExtension(item.Name);
             Extension = isFolder ? "" : Path.GetExtension(item.Name);
-            Location = item.FullName.Replace(AppDirectory, "");
+            Location = item.FullName.Replace(Config.AppDirectory, "");
             if (isFolder)
             {
                 Type = ItemType.Folder;
@@ -136,7 +129,7 @@ namespace AppStoreServer
             FileDateModified = item.LastWriteTimeUtc;
             FileDateAccessed = item.LastAccessTimeUtc.Ticks;
             ImageName = Shared.HashText(item.FullName);
-            if (!File.Exists(Path.Combine(AppDirectory, Shared.IconsDirectoryName, $"{ImageName}.png")))
+            if (!File.Exists(Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, $"{ImageName}.png")))
             {
                 ImageName = Shared.HashText(Type switch
                 {
@@ -181,7 +174,7 @@ namespace AppStoreServer
         {
             get
             {
-                return Path.Combine(AppDirectory, Shared.IconsDirectoryName, $"{Shared.HashText("APPLICATION")}.png");
+                return Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, $"{Shared.HashText("APPLICATION")}.png");
             }
         }
         public bool IsFolder
@@ -241,7 +234,7 @@ namespace AppStoreServer
 
         private static Dictionary<string, AppItem> LoadAllApps()
         {
-            DirectoryInfo root = new DirectoryInfo(AppDirectory);
+            DirectoryInfo root = new DirectoryInfo(Config.AppDirectory);
 
             List<AppItem> list = new List<AppItem>();
             LoadChildren(root, "", ref list, out int k);
@@ -251,7 +244,7 @@ namespace AppStoreServer
         private static void LoadChildren(DirectoryInfo directory, string parentId, ref List<AppItem> result, out int addedFilesCount)
         {
             addedFilesCount = 0;
-            bool isRoot = AppDirectory == directory.FullName;
+            bool isRoot = Config.AppDirectory == directory.FullName;
             if (directory.Exists)
             {
                 string Id = isRoot ? "" : Guid.NewGuid().ToString();

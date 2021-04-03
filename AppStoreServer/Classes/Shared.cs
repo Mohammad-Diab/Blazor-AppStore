@@ -6,8 +6,6 @@ namespace AppStoreServer
     public static class Shared
     {
         private static readonly MD5 md5Hash = MD5.Create();
-        internal static string IconsDirectoryName = "$ICONS";
-        internal static string ExtraAppsDirectoryName = "$Extra";
 
         internal static string FriendlyFileSize(double SizeInByte, int round)
         {

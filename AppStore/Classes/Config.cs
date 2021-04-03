@@ -7,17 +7,15 @@ namespace AppStore
 {
     public static class Config
     {
-        private static string _apiUrl;
-        public static string ApiUrl
+        public static void SetConfig(string apiUrl, long maxViewableFileSize)
         {
-            get
-            {
-                if (string.IsNullOrEmpty(_apiUrl))
-                {
-                    _apiUrl = "http://localhost/AppStoreServer/Apps/";
-                }
-                return _apiUrl;
-            }
+            ApiUrl = apiUrl;
+            MaxViewableFileSize = maxViewableFileSize;
         }
+
+        public static string ApiUrl { get; private set; }
+        public static long MaxViewableFileSize { get; private set; }
+
+
     }
 }

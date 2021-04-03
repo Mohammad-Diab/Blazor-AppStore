@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace AppStoreServer
 {
+
     public class Logic
     {
-
         internal static IEnumerable<IAppItem> GetApps(string appId = "", string filterText = "")
         {
             IEnumerable<AppItem> result;
@@ -46,7 +46,7 @@ namespace AppStoreServer
             string fullFilePath = AppItem.AppsList.Values.Where(x => x.Id == fileId).FirstOrDefault()?.GetFullPath();
             if (File.Exists(fullFilePath))
             {
-                if (!(new FileInfo(fullFilePath).Length > Settings.MaxViewableFileSize))
+                if (!(new FileInfo(fullFilePath).Length > Config.MaxViewableFileSize))
                 {
                     using (StreamReader stream = new StreamReader(File.OpenRead(fullFilePath)))
                     {
@@ -65,7 +65,7 @@ namespace AppStoreServer
             if (File.Exists(fullIconPath))
             {
                 FileInfo imageFile = new FileInfo(fullIconPath);
-                if (imageFile.Length > Settings.MaxViewableFileSize)
+                if (imageFile.Length > Config.MaxViewableFileSize)
                 {
                     fullIconPath = AppItem.GetFullImagePath("A");
                     imageFile = new FileInfo(fullIconPath);
