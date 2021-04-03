@@ -23,7 +23,7 @@
                     </div>
                 }
                 <div style="justify-content: center;" class="modal-footer text-center">
-                    <a style="min-width: 120px" class="btn btn-success" target="_blank" href="@($"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}")" download>Download</a>
+                    <a @onclick="Download" style="min-width: 120px" class="btn btn-success" target="_blank" href="@($"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}")" download>Download</a>
                     @if (currentItem.Type == SharedLibraries.ItemType.ISO)
                     {
                         <button style="min-width: 120px" type="button" class="btn btn-primary" @onclick="MountISO" disabled>Mount ISO</button>
@@ -112,7 +112,7 @@
     {
         //using HttpClient request = new HttpClient();
         //_ = request.GetStreamAsync($"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}");
-        //Close();
+        Close();
     }
 
     public void MountISO()
