@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SharedLibraries;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,5 +45,33 @@ namespace AppStoreServer.Controllers
             return new JsonResult(Logic.ReadFile(FileId));
         }
 
+        [HttpGet]
+        public FileStreamResult DownloadFile(string FileId)
+        {
+            AppItem item = Logic.GetApp(FileId);
+            if (!(item is null))
+            {
+                var path = item.GetFullPath();
+                return new FileStreamResult(new FileStream(path, FileMode.Open), "application/force-download")
+                {
+                    FileDownloadName = Path.GetFileName(path)
+                };
+            }
+            return null;
+        }
+
+        [HttpGet]
+        public FileStreamResult DownloadFDM()
+        {
+            string path = AppItem.GetFdmPath("","");
+            if (!string.IsNullOrEmpty(path))
+            {
+                return new FileStreamResult(new FileStream(path, FileMode.Open), "application/force-download")
+                {
+                    FileDownloadName = Path.GetFileName(path)
+                };
+            }
+            return null;
+        }
     }
 }

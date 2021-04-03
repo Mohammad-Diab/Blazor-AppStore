@@ -13,11 +13,20 @@
                 <div style="max-height: calc(100vh - 200px); overflow: auto;" class="modal-body">
                     <ViewFile item="@currentItem" />
                 </div>
+                @if (currentItem.Size > 1073741823) /* 1 GiB */
+                {
+                    <div class="text-center mb-2 font-weight-light">
+                        <span class="oi oi-task mr-1 text-info"></span>
+                        <span>For more file downloading process reliability, you can use</span>
+                        <a class="inline-link" target="_blank" href="@($"{Config.ApiUrl}DownloadFDM")" download>Free Download Manager</a>
+                        <span> .</span>
+                    </div>
+                }
                 <div style="justify-content: center;" class="modal-footer text-center">
-                    <button style="min-width: 120px" type="button" class="btn btn-success" @onclick="Download">Download</button>
+                    <a style="min-width: 120px" class="btn btn-success" target="_blank" href="@($"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}")" download>Download</a>
                     @if (currentItem.Type == SharedLibraries.ItemType.ISO)
                     {
-                        <button style="min-width: 120px" type="button" class="btn btn-primary" @onclick="MountISO">Mount ISO</button>
+                        <button style="min-width: 120px" type="button" class="btn btn-primary" @onclick="MountISO" disabled>Mount ISO</button>
                     }
                 </div>
             </div>
@@ -101,7 +110,24 @@
 
     public void Download()
     {
-        Console.WriteLine("Downloading...");
+        using HttpClient request = new HttpClient();
+        _ = request.GetStreamAsync($"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}");
+        Close();
+        //using (var dd = new System.IO.StreamWriter(System.IO.File.OpenWrite("file1.txt")))
+        //{
+        //    int i = 0;
+        //    while (i < 20)
+        //    {
+        //        dd.WriteLine($"Hi There {i}.");
+        //        i++;
+        //    }
+        //    dd.Close();
+        //    using (var f = System.IO.File.OpenText("file1.txt"))
+        //    {
+        //        Console.WriteLine(f.ReadToEnd());
+        //        f.Close();
+        //    }
+        //}
     }
 
     public void MountISO()

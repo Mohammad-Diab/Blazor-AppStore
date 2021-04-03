@@ -83,6 +83,11 @@ app {
     white-space: nowrap;
 }
 
+a.inline-link {
+    font-style: italic;
+    text-decoration: underline;
+}
+
 .back-btn {
     line-height: 20px;
 }
@@ -174,7 +179,8 @@ app {
 
 .browser-item .item-text {
     align-self: center;
-    flex: 1 1 calc(100% - 104px);
+    flex: 1 1 auto;
+    overflow: hidden;
 }
 
 .filter-input {

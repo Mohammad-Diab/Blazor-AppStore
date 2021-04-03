@@ -35,6 +35,11 @@ namespace AppStoreServer
             return result.ToList();
         }
 
+        internal static AppItem GetApp(string fileId)
+        {
+            return AppItem.AppsList.Values.Where(x => x.Id == fileId).FirstOrDefault();
+        }
+
         internal static string ReadFile(string fileId)
         {
             string result = "";

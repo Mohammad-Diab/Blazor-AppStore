@@ -10,7 +10,7 @@ namespace AppStoreServer
 {
     public class AppItem : IAppItem
     {
-        private const string AppDirectory = @"C:\AppStore\";
+        private static string AppDirectory = @"C:\AppStore\";
         private const long UpdateInterval = 3000000000; /* 5 minutes */
         private const string SyncLockKey = "C9CAEFBE-5754-4753-989C-C05620F536E1";
 
@@ -37,6 +37,11 @@ namespace AppStoreServer
             }
         }
 
+        internal static string GetAppDirectory()
+        {
+            return AppDirectory;
+        }
+
         private async static Task UpdateAppsListTask()
         {
             await Task.Run(UpdateAppsList);
@@ -53,7 +58,7 @@ namespace AppStoreServer
                 }
                 foreach (var item in AppsList.Values)
                 {
-                    string fullItemPath = item.Location;
+                    string fullItemPath = item.GetFullPath();
                     try
                     {
                         if (item.IsFolder)
@@ -70,6 +75,12 @@ namespace AppStoreServer
                     catch (Exception) { }
                 }
             }
+        }
+
+        internal static string GetFdmPath(string os, string architecture)
+        {
+            string path = Path.Combine(AppDirectory, Shared.ExtraAppsDirectoryName, "fdm.exe");
+            return File.Exists(path) ? path : "";
         }
 
         public static void ResetAppList()
