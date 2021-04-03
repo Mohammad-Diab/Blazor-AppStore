@@ -245,6 +245,16 @@ a.inline-link {
     max-height: calc(50vh - 76px);
 }
 
+.overflow-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+
 @keyframes zoom {
     from {
         filter: none;

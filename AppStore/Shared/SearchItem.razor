@@ -3,7 +3,7 @@
 {
     <button @onclick="ActivateMe" class="dropdown-item d-flex" title="@($"root\\{item.Location}")">
         <img class="mr-3 align-self-center search-item-image" src="@($"{Config.ApiUrl}GetImage?ImageName={item.ImageName}")" style="width: 32px; height: auto;">
-        <div class="lead align-self-center">@item.Name</div>
+        <div class="lead align-self-center overflow-ellipsis">@item.Name</div>
     </button>
 }
 

@@ -23,7 +23,7 @@
                         <span class="oi @(string.IsNullOrEmpty(FilterText) ? "oi-magnifying-glass" : "oi-x")"></span>
                     </button>
                 </div>
-                <div class="search-dropdown-menu dropdown-menu overflow-auto w-100 mt-2 light-zoomIn @(isOpenedDropdown?"d-block":"")">
+                <div class="search-dropdown-menu dropdown-menu overflow-y-auto w-100 mt-2 light-zoomIn @(isOpenedDropdown?"d-block":"")">
 
                     @if (searchResultList?.Count > 0)
                     {
