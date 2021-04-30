@@ -72,8 +72,15 @@ namespace AppStoreServer
 
         internal static string GetFdmPath(string os, string architecture)
         {
-            string path = Path.Combine(Config.AppDirectory, Config.ExtraAppsDirectoryName, "fdm.exe");
+            string fdmFileName = GetFdmName(os, architecture);
+            string path = Path.Combine(Config.AppDirectory, Config.ExtraAppsDirectoryName, fdmFileName);
             return File.Exists(path) ? path : "";
+        }
+
+        private static string GetFdmName(string os, string architecture)
+        {
+            string ext = os switch { "windows" => ".exe", _ => "" };
+            return $"fdm_{architecture}{ext}";
         }
 
         public static void ResetAppList()

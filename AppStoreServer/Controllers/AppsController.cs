@@ -63,7 +63,9 @@ namespace AppStoreServer.Controllers
         [HttpGet]
         public FileStreamResult DownloadFDM()
         {
-            string path = AppItem.GetFdmPath("","");
+            string os = Shared.GetClientOS(Request.Headers["User-Agent"].ToString());
+            string architecture = Shared.Is64bitClient(Request.Headers["User-Agent"].ToString()) ? "x64" : "x86";
+            string path = AppItem.GetFdmPath(os, architecture);
             if (!string.IsNullOrEmpty(path))
             {
                 return new FileStreamResult(new FileStream(path, FileMode.Open), "application/force-download")

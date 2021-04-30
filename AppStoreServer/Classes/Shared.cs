@@ -44,5 +44,45 @@ namespace AppStoreServer
             8 => "YiB",
             _ => "bytes",
         };
+
+        internal static string GetClientOS(string userAgent)
+        {
+            if (string.IsNullOrEmpty(userAgent))
+                return "windows";
+            
+            if (userAgent.Contains("Android"))
+                return "android";
+
+            if (userAgent.Contains("iPad"))
+                return "ipad os";
+
+            if (userAgent.Contains("iPhone"))
+                return "iphone os";
+
+            if (userAgent.Contains("Linux") && userAgent.Contains("KFAPWI"))
+                return "kindle fire";
+
+            if (userAgent.Contains("RIM Tablet") || (userAgent.Contains("BB") && userAgent.Contains("Mobile")))
+                return "black berry";
+
+            if (userAgent.Contains("Windows Phone"))
+                return "windows phone";
+
+            if (userAgent.Contains("Mac OS"))
+                return "mac os";
+
+            if (userAgent.Contains("Windows NT"))
+                return "windows";
+
+            if (userAgent.Contains("Linux"))
+                return "linux";
+
+            return "windows";
+        }
+
+        internal static bool Is64bitClient(string userAgent)
+        {
+            return userAgent.Contains("x64");
+        }
     }
 }
