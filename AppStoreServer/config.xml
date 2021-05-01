@@ -1,1 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?><settings><setting><key>MaxViewableFileSize</key><value>262144</value></setting><setting><key>AppDirectory</key><value>C:\AppStore\</value></setting><setting><key>UpdateInterval</key><value>3000000000</value></setting><setting><key>ApiUrl</key><value>http://localhost/AppStoreServer/Apps/</value></setting><setting><key>IconsDirectoryName</key><value>$ICONS</value></setting><setting><key>ExtraAppsDirectoryName</key><value>$Extra</value></setting></settings>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<settings>
+  <setting>
+    <key>MaxViewableFileSize</key>
+    <value>262144</value>
+  </setting>
+  <setting>
+    <key>AppDirectory</key>
+    <value>C:\AppStore\</value>
+  </setting>
+  <setting>
+    <key>UpdateInterval</key>
+    <value>3000000000</value>
+  </setting>
+  <setting>
+    <key>ApiUrl</key>
+    <value>http://localhost/AppStoreServer/Apps/</value>
+  </setting>
+  <setting>
+    <key>IconsDirectoryName</key>
+    <value>$ICONS</value>
+  </setting>
+  <setting>
+    <key>ExtraAppsDirectoryName</key>
+    <value>$Extra</value>
+  </setting>
+</settings>
