@@ -148,6 +148,7 @@ a.inline-link {
     border: solid 1px gray;
     display: flex;
     border-radius: .25rem;
+    position: relative;
 }
 
 .browser-item:hover{
@@ -314,6 +315,23 @@ div.fixed-text {
 
 div.fixed-text .bold{
     font-weight: 400;    
+}
+
+.download-zip-bottom {
+    position: absolute;
+    bottom: .5em;
+    right: .5em;
+    background-color: transparent;
+    border: none;
+    line-height: 1;
+    font-size: 1.25em;
+    cursor: pointer;
+    color: gray;
+    transition: color 0.3s;
+}
+
+.download-zip-bottom:hover{
+    color: royalblue;
 }
 
 @keyframes spalsh {

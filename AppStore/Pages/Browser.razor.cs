@@ -57,7 +57,7 @@ namespace AppStore.Pages
             breadcrumbList = new List<AppItem>();
             fullList = new List<AppItem>();
             InitializeTimer();
-            AppItem app = new AppItem("root", "root", "", "root", true, SharedLibraries.ItemType.Folder, 0, "", "", "");
+            AppItem app = new AppItem("root", "root", "", "root", true, SharedLibraries.ItemType.Folder, 0, "", "", "", false);
             await GetDataFromServer(app);
             await base.OnInitializedAsync();
         }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.IO.Compression;
 
 namespace AppStoreServer
 {
@@ -23,8 +24,8 @@ namespace AppStoreServer
             }
             else
             {
-                result = AppItem.AppsList.Values.Where(x => !x.IsFolder && x.Name.ToLower().Contains(filterText.ToLower()));
-                result = result.Union(AppItem.AppsList.Values.Where(x => !x.IsFolder && x.Location.ToLower().Contains(filterText.ToLower()))).Distinct().Take(5);
+                result = AppItem.AppsList.Values.Where(x => (!x.IsFolder || x.IsDownloadableContent) && x.Name.ToLower().Contains(filterText.ToLower()));
+                result = result.Union(AppItem.AppsList.Values.Where(x => (!x.IsFolder || x.IsDownloadableContent) && x.Location.ToLower().Contains(filterText.ToLower()))).Distinct().Take(5);
             }
             return result.ToList();
         }
@@ -57,9 +58,9 @@ namespace AppStoreServer
             return result;
         }
 
-        internal static byte[] ReadImage(string imageName)
+        internal static byte[] ReadImage(string imageName, int imageWidth)
         {
-            string fullIconPath = AppItem.GetFullImagePath(imageName);
+            string fullIconPath = AppItem.GetFullImagePath(imageName, imageWidth);
 
             byte[] result = { };
             if (File.Exists(fullIconPath))
@@ -67,15 +68,51 @@ namespace AppStoreServer
                 FileInfo imageFile = new FileInfo(fullIconPath);
                 if (imageFile.Length > Config.MaxViewableFileSize)
                 {
-                    fullIconPath = AppItem.GetFullImagePath("A");
+                    fullIconPath = AppItem.GetFullImagePath("A", imageWidth);
                     imageFile = new FileInfo(fullIconPath);
                 }
                 using (BinaryReader stream = new BinaryReader(imageFile.OpenRead()))
                 {
                     result = stream.ReadBytes((int)imageFile.Length);
-                }   
+                }
             }
             return result;
+        }
+
+        internal static (string filePath, string directoryName) GetDirctoryPath(string DirectoryId)
+        {
+            AppItem item = GetApp(DirectoryId);
+            string directoryPath = item?.GetFullPath();
+            string directoryName = item?.Name;
+            if (!string.IsNullOrEmpty(directoryPath) && File.Exists(Path.Combine(directoryPath, Config.Default_DownloadableContentTag)))
+            {
+                long DirectorySize = item.GetSize();
+                string zipFileName = Shared.HashText($"{item.GetFullPath().Replace(Config.AppDirectory, "")}/{item.ChildernCount}");
+                string zipFileDirectory = Path.Combine(Config.AppDirectory, Config.TempDirectoryName);
+                string zipFileFullName = Path.Combine(zipFileDirectory, $"{zipFileName}.zip");
+                if (!File.Exists(zipFileFullName))
+                {
+                    long currentDriveFreeSpace = Shared.GetDriveFreeSize(zipFileDirectory);
+                    if (DirectorySize < currentDriveFreeSpace && DirectorySize < Config.MaxDownloadableDirectorySize)
+                    {
+                        try
+                        {
+                            if (!Directory.Exists(zipFileDirectory))
+                            {
+                                Directory.CreateDirectory(zipFileDirectory);
+                            }
+                            ZipFile.CreateFromDirectory(directoryPath, zipFileFullName, CompressionLevel.Fastest, false);
+                        }
+                        catch (Exception) { }
+                        return (zipFileFullName, directoryName);
+                    }
+                }
+                else
+                {
+                    return (zipFileFullName, directoryName);
+                }
+            }
+            return (null, null);
         }
     }
 }

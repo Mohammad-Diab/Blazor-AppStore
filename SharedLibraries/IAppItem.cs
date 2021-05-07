@@ -14,6 +14,8 @@ namespace SharedLibraries
 
         bool IsFolder { get; }
 
+        bool IsDownloadableContent { get; }
+
         ItemType Type { get; set; }
 
         string Content { get; }

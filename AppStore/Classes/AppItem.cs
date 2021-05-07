@@ -13,6 +13,7 @@ namespace AppStore
         public string Extension { get; set; }
         public string Location { get; set; }
         public bool IsFolder { get; set; }
+        public bool IsDownloadableContent { get; set; }
         public ItemType Type { get; set; }
         public string Content { get; set; }
         public long Size { get; set; }
@@ -24,7 +25,7 @@ namespace AppStore
 
         }
 
-        public AppItem(string id, string name, string extension, string location, bool isFolder, ItemType type, long size, string content, string dateModified, string imagePath)
+        public AppItem(string id, string name, string extension, string location, bool isFolder, ItemType type, long size, string content, string dateModified, string imagePath, bool allowDownloadAsZip)
         {
             Id = id;
             Name = name;
@@ -36,6 +37,7 @@ namespace AppStore
             Size = size;
             DateModified = dateModified;
             ImageName = imagePath;
+            IsDownloadableContent = allowDownloadAsZip;
         }
 
         public override int GetHashCode()

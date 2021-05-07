@@ -7,6 +7,8 @@ namespace AppStore
 {
     public static class Config
     {
+
+        public const long Default_LargeFileSize = 1073741823;                   // 1 Gigabyte
         public static void SetConfig(string apiUrl, long maxViewableFileSize)
         {
             ApiUrl = apiUrl;

@@ -88,21 +88,31 @@ namespace AppStoreServer
             _appsList = null;
         }
 
-        internal static string GetFullImagePath(string imageName)
+        internal static string GetFullImagePath(string imageName, int imageWidth)
         {
-            if (!(HexReg.Match(imageName).Success && File.Exists(Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, imageName + ".png"))))
+            if (!(HexReg.Match(imageName).Success && File.Exists(Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, imageWidth.ToString(), imageName + ".png"))))
             {
                 return FileIconPath;
             }
             else
             {
-                return Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, imageName + ".png");
+                return Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, imageWidth.ToString(), imageName + ".png");
             }
         }
 
         internal string GetFullPath()
         {
             return Path.Combine(Config.AppDirectory, Location);
+        }
+
+        internal long GetSize()
+        {
+            if (IsFolder)
+            {
+                string directoryFullPath = GetFullPath();
+                return AppsList.Where(x => !x.Value.IsFolder && x.Value.GetFullPath().Contains(directoryFullPath)).Select(x => x.Value.FileSize).Sum();
+            }
+            return FileSize;
         }
 
         #region Constructors
@@ -121,6 +131,8 @@ namespace AppStoreServer
             if (isFolder)
             {
                 Type = ItemType.Folder;
+                ImageName = Shared.HashText("FOLDER");
+                IsDownloadableContent = File.Exists(Path.Combine(item.FullName, Config.Default_DownloadableContentTag));
             }
             else
             {
@@ -132,11 +144,12 @@ namespace AppStoreServer
                 };
 
                 FileSize = (item as FileInfo).Length;
+                ImageName = Shared.HashText($"{item.FullName.Replace(Config.AppDirectory, "")}/{FileSize}");
             }
             FileDateModified = item.LastWriteTimeUtc;
             FileDateAccessed = item.LastAccessTimeUtc.Ticks;
-            ImageName = Shared.HashText(item.FullName);
-            if (!File.Exists(Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, $"{ImageName}.png")))
+
+            if (!File.Exists(Path.Combine(Config.AppDirectory, Config.IconsDirectoryName, "96", $"{ImageName}.png")))
             {
                 ImageName = Shared.HashText(Type switch
                 {
@@ -173,6 +186,8 @@ namespace AppStoreServer
 
         internal string ParentId { get; set; }
 
+        public bool IsDownloadableContent { get; set; }
+
         #endregion
 
         #region Read Only Properties
@@ -194,7 +209,7 @@ namespace AppStoreServer
 
         private int childernCount;
 
-        private int ChildernCount
+        internal int ChildernCount
         {
             get
             {
@@ -260,7 +275,7 @@ namespace AppStoreServer
                     var subDirectory = directory.GetDirectories();
                     foreach (var item in subDirectory)
                     {
-                        if (item.Name.StartsWith("$"))
+                        if (item.Name.StartsWith(Config.Default_SpecialChar))
                             continue;
                         LoadChildren(item, Id, ref result, out int subAddedFilesCount);
                         addedFilesCount += subAddedFilesCount;
@@ -273,7 +288,7 @@ namespace AppStoreServer
                     var files = directory.GetFiles();
                     foreach (var item in files)
                     {
-                        if (item.Name.StartsWith("$"))
+                        if (item.Name.StartsWith(Config.Default_SpecialChar) || ((item.Attributes & (FileAttributes.System | FileAttributes.Hidden)) > 0))
                             continue;
                         string fileId = Guid.NewGuid().ToString();
                         result.Add(new AppItem(fileId, false, Id, item));

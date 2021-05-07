@@ -7,12 +7,19 @@ else
 {
     <div @onclick="ActivateMe" style="animation-delay: @((rand.Next(50, 500)) + "ms");" class="p-2 browser-item @isFolder @additionalClass">
         <div style="" class="mr-2 p-1 item-image">
-            <img style="animation-delay: @((rand.Next(500, 1500)) + "ms");" src="@($"{Config.ApiUrl}GetImage?ImageName={item.ImageName}")" class="animate__animated animate__jackInTheBox">
+            <img style="animation-delay: @((rand.Next(500, 1500)) + "ms");" src="@($"{Config.ApiUrl}GetImage?ImageName={item.ImageName}&ImageWidth=96")" class="animate__animated animate__jackInTheBox">
         </div>
         <div class="item-text" style="">
             <div class="mb-2 lead" style="max-height: 58px; overflow: hidden;" title="@item.Name">@item.Name</div>
             <div class="mb-1 text-secondary" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="@item.Content">@item.Content</div>
         </div>
+        @if (item.IsFolder && item.IsDownloadableContent)
+        {
+            <a @onclick:stopPropagation="true" class="download-zip-bottom" title="Download folder" href="@($"{Config.ApiUrl}DownloadDirectory?DirectoryId={item.Id}")" download>
+                <span class="oi oi-data-transfer-download"></span>
+            </a>
+        }
+
     </div>
 }
 

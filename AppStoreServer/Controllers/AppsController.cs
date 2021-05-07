@@ -32,11 +32,11 @@ namespace AppStoreServer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetImageAsync(string ImageName)
+        public async Task<IActionResult> GetImage(string ImageName, int imageWidth)
         {
             Random Rand = new Random();
             await Task.Delay(Rand.Next(10, 100));
-            return File(Logic.ReadImage(ImageName), "image/png");
+            return File(Logic.ReadImage(ImageName, imageWidth), "image/png");
         }
 
         [HttpGet]
@@ -75,5 +75,21 @@ namespace AppStoreServer.Controllers
             }
             return null;
         }
+
+
+        [HttpGet]
+        public FileStreamResult DownloadDirectory(string DirectoryId)
+        {
+            (string zipFilePath, string name) = Logic.GetDirctoryPath(DirectoryId);
+            if (!string.IsNullOrEmpty(zipFilePath))
+            {
+                return new FileStreamResult(new FileStream(zipFilePath, FileMode.Open), "application/force-download")
+                {
+                    FileDownloadName = $"{name}.zip"
+                };
+            }
+            return null;
+        }
+
     }
 }

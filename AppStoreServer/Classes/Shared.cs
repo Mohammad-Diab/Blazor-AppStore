@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace AppStoreServer
@@ -49,7 +50,7 @@ namespace AppStoreServer
         {
             if (string.IsNullOrEmpty(userAgent))
                 return "windows";
-            
+
             if (userAgent.Contains("Android"))
                 return "android";
 
@@ -84,5 +85,28 @@ namespace AppStoreServer
         {
             return userAgent.Contains("x64");
         }
+
+        internal static long GetDriveFreeSize(string zipFileDirectory)
+        {
+            DriveInfo di = new DriveInfo(zipFileDirectory.Substring(0, 1));
+            long availableFreeSpace = di.AvailableFreeSpace;
+            long driveMaximumFileSize = GetFileSystemMaximumFileSize(di.DriveFormat);
+            return Math.Min(availableFreeSpace, driveMaximumFileSize);
+        }
+
+        internal static long GetFileSystemMaximumFileSize(string driveFormat) => driveFormat.ToLower() switch
+        {
+            "fat16" => 4294967294,                  // 4 Gibibyte 
+            "fat32" => 4294967294,                  // 4 Gibibyte
+            "ntfs" => long.MaxValue,                // 16 Exabyte
+            "refs" => long.MaxValue,                // 16 Exabyte
+            "exfat" => long.MaxValue,               // 16 Exabyte
+            "apfs" => long.MaxValue,                // 8 Exabyte
+            "ext2" => 2199023255552,                // 2 Terabyte
+            "ext3" => 2199023255552,                // 2 Terabyte
+            "ext4" => 8796093022208,                // 16 Terabyte
+            _ => 50
+        };
+
     }
 }

@@ -11,6 +11,19 @@ namespace AppStoreServer
     {
         private const string SyncLockKey = "1F04C5CC-1EC2-4E5E-B46F-8B46A362AA03";
 
+        public const string Default_SpecialChar = "$";
+
+        public static readonly string Default_DownloadableContentTag = $"{Default_SpecialChar}DOWNLOADABLECONTENT";
+
+        private static readonly long Default_MaxViewableFileSize = 262144;                              // 256KB
+        private static readonly string Default_AppDirectory = @"C:\AppStore\";
+        private static readonly long Default_UpdateInterval = 3000000000;                               // 5 minutes
+        private static readonly string Default_ApiURL = "http://localhost/AppStoreServer/Apps/";
+        private static readonly string Default_IconsDirectoryName = $"{Default_SpecialChar}ICONS";
+        private static readonly string Default_ExtraAppsDirectoryName = $"{Default_SpecialChar}EXTRA";
+        private static readonly string Default_TempDirectoryName = $"{Default_SpecialChar}TEMP";
+        private static readonly long Default_MaxDownloadableDirectorySize = 104857600;                  // 100MB
+
         public static void ReadConfigFile(bool isCallBack)
         {
             lock (SyncLockKey)
@@ -42,35 +55,37 @@ namespace AppStoreServer
                             {
                                 string key = item.FirstChild.Name == "key" ? item.FirstChild.InnerText : item.LastChild.InnerText;
                                 string value = item.FirstChild.Name == "value" ? item.FirstChild.InnerText : item.LastChild.InnerText;
-                                switch (key)
+                                switch (key.ToUpper())
                                 {
-                                    case "MaxViewableFileSize":
-                                        long maxViewableFileSize = 0;
-                                        if (!long.TryParse(value, out maxViewableFileSize))
-                                        {
-                                            maxViewableFileSize = 262144;
-                                        }
-                                        _maxViewableFileSize = maxViewableFileSize;
+                                    case "MAXVIEWABLEFILESIZE":
+                                        _maxViewableFileSize = long.TryParse(value, out long maxViewableFileSize) 
+                                            ? maxViewableFileSize 
+                                            : Default_MaxViewableFileSize;
                                         break;
-                                    case "UpdateInterval":
-                                        long updateInterval = 0;
-                                        if (!long.TryParse(value, out updateInterval))
-                                        {
-                                            updateInterval = 3000000000;
-                                        }
-                                        _updateInterval = updateInterval;
+                                    case "UPDATEINTERVAL":
+                                        _updateInterval = long.TryParse(value, out long updateInterval) 
+                                            ? updateInterval 
+                                            : Default_UpdateInterval;
                                         break;
-                                    case "ApiUrl":
+                                    case "APIURL":
                                         _apiUrl = value;
                                         break;
-                                    case "AppDirectory":
+                                    case "APPDIRECTORY":
                                         _appDirectory = value;
                                         break;
-                                    case "ExtraAppsDirectoryName":
+                                    case "EXTRAAPPSDIRECTORYNAME":
                                         _extraAppsDirectoryName = value;
                                         break;
-                                    case "IconsDirectoryName":
+                                    case "ICONSDIRECTORYNAME":
                                         _iconsDirectoryName = value;
+                                        break;
+                                    case "TEMPDIRECTORYNAME":
+                                        _tempDirectoryName = value;
+                                        break;
+                                    case "MAXDOWNLOADABLEDIRECTORYSIZE":
+                                        _maxDownloadableDirectorySize = long.TryParse(value, out long maxDownloadableDirectorySize)
+                                            ? maxDownloadableDirectorySize
+                                            : Default_MaxDownloadableDirectorySize;
                                         break;
                                 }
                             }
@@ -106,12 +121,14 @@ namespace AppStoreServer
 
                     xml.WriteStartElement("settings");
 
-                    CreateSettingXmlNode("MaxViewableFileSize", "262144");
-                    CreateSettingXmlNode("AppDirectory", @"C:\AppStore\");
-                    CreateSettingXmlNode("UpdateInterval", "3000000000");
-                    CreateSettingXmlNode("ApiUrl", "http://localhost/AppStoreServer/Apps/");
-                    CreateSettingXmlNode("IconsDirectoryName", "$ICONS");
-                    CreateSettingXmlNode("ExtraAppsDirectoryName", "$Extra");
+                    CreateSettingXmlNode("MaxViewableFileSize", Default_MaxViewableFileSize.ToString());
+                    CreateSettingXmlNode("AppDirectory", Default_AppDirectory);
+                    CreateSettingXmlNode("UpdateInterval", Default_UpdateInterval.ToString());
+                    CreateSettingXmlNode("ApiURL", Default_ApiURL);
+                    CreateSettingXmlNode("IconsDirectoryName", Default_IconsDirectoryName);
+                    CreateSettingXmlNode("ExtraAppsDirectoryName", Default_ExtraAppsDirectoryName);
+                    CreateSettingXmlNode("TempDirectoryName", Default_TempDirectoryName);
+                    CreateSettingXmlNode("MaxDownloadableDirectorySize", Default_MaxDownloadableDirectorySize.ToString());
 
                     xml.WriteEndElement();
 
@@ -198,6 +215,32 @@ namespace AppStoreServer
                     ReadConfigFile(false);
                 }
                 return _extraAppsDirectoryName;
+            }
+        }
+
+        static string _tempDirectoryName = "";
+        public static string TempDirectoryName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_tempDirectoryName))
+                {
+                    ReadConfigFile(false);
+                }
+                return _tempDirectoryName;
+            }
+        }
+
+        static long _maxDownloadableDirectorySize = -1;
+        public static long MaxDownloadableDirectorySize
+        {
+            get
+            {
+                if (_maxDownloadableDirectorySize == -1)
+                {
+                    ReadConfigFile(false);
+                }
+                return _maxDownloadableDirectorySize;
             }
         }
     }

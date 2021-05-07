@@ -13,7 +13,7 @@
                 <div style="max-height: calc(100vh - 200px); overflow: auto;" class="modal-body">
                     <ViewFile item="@currentItem" />
                 </div>
-                @if (currentItem.Size > 1073741823) /* 1 GiB */
+                @if (currentItem.Size > Config.Default_LargeFileSize)
                 {
                     <div class="text-center mb-2 font-weight-light">
                         <span class="oi oi-task mr-1 text-info"></span>
@@ -23,10 +23,16 @@
                     </div>
                 }
                 <div style="justify-content: center;" class="modal-footer text-center">
-                    <a @onclick="Download" style="min-width: 120px" class="btn btn-success" target="_blank" href="@($"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}")" download>Download</a>
+                    <a @onclick="Download" style="min-width: 120px" class="btn btn-success" target="_blank" href="@(currentItem.IsFolder && currentItem.IsDownloadableContent? $"{Config.ApiUrl}DownloadDirectory?DirectoryId={currentItem.Id}": $"{Config.ApiUrl}DownloadFile?FileId={currentItem.Id}")" download>
+                        <span class="oi oi-data-transfer-download mr-2"></span>
+                        <span>@(currentItem.IsFolder ? "Download as Zip file" : "Download")</span>
+                    </a>
                     @if (currentItem.Type == SharedLibraries.ItemType.ISO)
                     {
-                        <button style="min-width: 120px" type="button" class="btn btn-primary" @onclick="MountISO" disabled>Mount ISO</button>
+                        <button style="min-width: 120px" type="button" class="btn btn-primary" @onclick="MountISO" disabled>
+                            <span class="oi oi-target mr-2"></span>
+                            <span>Mount ISO</span>
+                        </button>
                     }
                 </div>
             </div>

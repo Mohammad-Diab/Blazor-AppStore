@@ -22,6 +22,14 @@
   </setting>
   <setting>
     <key>ExtraAppsDirectoryName</key>
-    <value>$Extra</value>
+    <value>$EXTRA</value>
+  </setting>
+  <setting>
+    <key>TempDirectoryName</key>
+    <value>$TEMP</value>
+  </setting>
+  <setting>
+    <key>MaxDownloadableDirectorySize</key>
+    <value>1073741824</value>
   </setting>
 </settings>

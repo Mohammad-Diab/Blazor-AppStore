@@ -2,7 +2,7 @@
 {
     <div class="p-2 d-flex">
         <div style="flex: 0 0 auto; align-self: center;" class="mr-4 p-1">
-            <img style="width: 192px;" src="@($"{Config.ApiUrl}GetImage?ImageName={item.ImageName}")">
+            <img style="width: 192px;" src="@($"{Config.ApiUrl}GetImage?ImageName={item.ImageName}&ImageWidth=256")">
         </div>
         <div style="flex: 1 1 auto; align-self: center;" class="item-text">
             <div class="mb-2 lead" title="@item.Name"><span class="font-weight-normal">@item.Name</span></div>
