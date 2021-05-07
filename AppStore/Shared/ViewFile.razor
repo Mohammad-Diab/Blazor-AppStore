@@ -8,7 +8,7 @@
             <div class="mb-2 lead" title="@item.Name"><span class="font-weight-normal">@item.Name</span></div>
             <div class="mb-2 lead" title="@item.Location">Path: <span class="font-weight-normal">@($"root\\{item.Location}")</span></div>
             <div class="mb-2 lead" title="@item.DateModified">Last Modified: <span class="font-weight-normal">@item.DateModified</span></div>
-            <div class="mb-2 lead" title="@item.Content">Size: <span class="font-weight-normal">@item.Content</span></div>
+            <div class="mb-2 lead" title="@item.Content">@(item.IsFolder ? "Contains" : "Size"): <span class="font-weight-normal">@item.Content</span></div>
         </div>
     </div>
 }
