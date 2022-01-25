@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedLibraries;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace AppStoreServer.Controllers
 {
+    [EnableCors("AllCORS")]
     [Route("[controller]/[action]")]
     [ApiController]
     public class AppsController : ControllerBase
