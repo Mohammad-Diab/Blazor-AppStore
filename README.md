@@ -12,6 +12,7 @@ A web "app store" that shows the contents of a folder on the server like a file 
 ## How it works
 - **AppStoreServer** (API): lists the folder set by `AppDirectory` in `config.xml`, serves icons from its `$ICONS` subfolder and files on request. CORS is open, so the site can be hosted on another address.
 - **AppStore** (site): static Blazor WebAssembly files. `appsettings.json` holds `ApiUrl`, the address of the API.
+- **Icons:** the `$ICONS` folder is made with [Icon eXtractor](https://github.com/Mohammad-Diab/Icon-eXtractor). Point it at the apps folder, keep the default "MD5 (AppStore)" file names and the `$` skip prefix, and check the sizes the site uses (32, 96 and 256). Items without an icon there get a generic one for their type (folder, ISO, text or app).
 
 ## Run it from the release
 1. Download both archives from [Releases](https://github.com/Mohammad-Diab/Blazor-AppStore/releases) and extract them with [7-Zip](https://www.7-zip.org).
